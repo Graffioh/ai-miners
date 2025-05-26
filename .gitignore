@@ -1,1 +1,3 @@
 mnist/venv
+mnist/data/*
+mnist_model.pth
