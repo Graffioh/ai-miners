@@ -2,6 +2,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from PIL import Image
 import os
+import numpy as np
 
 # sprite obj
 class Sprite():
@@ -14,47 +15,127 @@ class Sprite():
 
 # prep dataset
 class SpriteDataset(Dataset):
-    def __init__(self, dataset_dir):
+    def __init__(self, dataset_dir, sprite_width=128, sprite_height=128, transform=None):
         self.dataset_dir = dataset_dir
-        # Features
-        self.sprites = self.split_sprite_sheet(self.dataset_dir) # 2D arr of Sprite
-        # Inputs
-        self.directions = self.set_directions(self.sprites) # arr of int
-        self.dataset_rows = len(self.sprites)
-        self.dataset_cols = len(self.sprites[0]) if self.sprites else 0
+        self.sprite_width = sprite_width
+        self.sprite_height = sprite_height
+        self.transform = transform
+        self.directions = [0,1,2,3,4,5,6,7] # 8 directions as label
+        self.sprites = self.split_sprite_sheet(dataset_dir) # sprite objects as features
+        self.flattened_data = self._flatten_sprites() # for easy indexing
 
     def __len__(self):
-            return self.dataset_rows * self.dataset_cols
+        return len(self.flattened_data)
 
     def __getitem__(self, idx):
-        # convert 1D index to 2D coordinates
-        row = idx // self.dataset_cols
-        col = idx % self.dataset_cols
+        sprite_obj = self.flattened_data[idx]
+        image = sprite_obj.image
 
-        sprite_obj = self.sprites[row][col]
-        return sprite_obj.image, sprite_obj.direction
+        # Convert to tensor if needed
+        if self.transform:
+            image = self.transform(image)
+        elif isinstance(image, np.ndarray):
+            image = torch.from_numpy(image).float()
+
+        return sprite_obj.character, image, sprite_obj.direction, sprite_obj.action
 
     def split_sprite_sheet(self, dataset_dir):
-        # TODO: implement this
-        return []
+        sprites = []
 
-    def set_directions(self, sprites):
-        # TODO: implement this
-        return []
+        # Iterate through character folders
+        for char_folder in os.listdir(dataset_dir):
+            char_path = os.path.join(dataset_dir, char_folder)
+            if not os.path.isdir(char_path):
+                continue
+
+            char_sprites = []
+
+            # Process each sprite sheet for this character
+            for action_file in os.listdir(char_path):
+                if not action_file.endswith(('.png', '.jpg', '.jpeg')):
+                    continue
+
+                action_name = os.path.splitext(action_file)[0]
+                sprite_sheet_path = os.path.join(char_path, action_file)
+
+                # Load and split the sprite sheet
+                sprite_sheet = Image.open(sprite_sheet_path)
+                sheet_width, sheet_height = sprite_sheet.size
+
+                # Extract individual sprites
+                cols = 15
+                rows = 8
+                for row in range(rows):
+                    for col in range(cols):
+                        left = col * self.sprite_width
+                        top = row * self.sprite_height
+                        right = left + self.sprite_width
+                        bottom = top + self.sprite_height
+
+                        sprite_img = sprite_sheet.crop((left, top, right, bottom))
+                        sprite_array = np.array(sprite_img)
+
+                        # Create sprite object
+                        sprite = Sprite(
+                            char=char_folder,
+                            img=sprite_array,
+                            act=action_name,
+                            dir=row,
+                            frame=col
+                        )
+                        char_sprites.append(sprite)
+
+            sprites.append(char_sprites)
+        return sprites
+
+    def _flatten_sprites(self):
+        """Flatten 2D sprite array into 1D for easy indexing"""
+        flattened = []
+        for char_sprites in self.sprites:
+            flattened.extend(char_sprites)
+        return flattened
 
 
-
-
-
-
-
-
-# load datasets
-
-# data loading
-
-
-
-# ------------------------------------------
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
+
+def print_test_dataset(dataset_path):
+    print(f"Testing SpriteDataset {dataset_path}")
+
+    try:
+        # Create dataset
+        dataset = SpriteDataset(dataset_path)
+
+        # Basic info
+        print(f"Dataset loaded: {len(dataset)} sprites")
+        print(f"Directions: {dataset.directions}")
+
+        # Test first item
+        if len(dataset) > 0:
+            character, image, direction, action = dataset[0]
+            print(f"First sprite - Character name: {character}, Action name: {action}, Image shape: {image.shape}, Direction: {direction}")
+
+            test_indices = [0, 15, 30, 60, 105, 121, 250, 400, 666]
+            print("\n--- Testing different directions ---")
+            for i in test_indices:
+                if i < len(dataset):
+                    character, image, direction, action = dataset[i]
+                    sprite_obj = dataset.flattened_data[i]
+                    print(f"Index {i}: Char={character}, Action={action}, Dir={direction}, Frame={sprite_obj.frame}")
+
+            print("✅ Dataset working correctly!")
+        else:
+            print("❌ No sprites found!")
+
+    except Exception as e:
+        print(f"❌ Error: {e}")
+
+def main():
+    train_dataset_path = "./dataset/train"
+    print_test_dataset(train_dataset_path)
+
+    test_dataset_path = "./dataset/test"
+    print_test_dataset(test_dataset_path)
+
+if __name__ == "__main__":
+    main()
