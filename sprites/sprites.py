@@ -1,31 +1,60 @@
 import torch
-from torch.utils.data import DataLoader
-from torchvision import datasets, transforms
+from torch.utils.data import Dataset, DataLoader
+from PIL import Image
+import os
 
-# Check if GPU is available
+# sprite obj
+class Sprite():
+    def __init__(self, char, img, act, dir, frame):
+        self.character = char # str
+        self.image = img # np.array
+        self.action = act # str
+        self.direction = dir # int
+        self.frame = frame # int
+
+# prep dataset
+class SpriteDataset(Dataset):
+    def __init__(self, dataset_dir):
+        self.dataset_dir = dataset_dir
+        # Features
+        self.sprites = self.split_sprite_sheet(self.dataset_dir) # 2D arr of Sprite
+        # Inputs
+        self.directions = self.set_directions(self.sprites) # arr of int
+        self.dataset_rows = len(self.sprites)
+        self.dataset_cols = len(self.sprites[0]) if self.sprites else 0
+
+    def __len__(self):
+            return self.dataset_rows * self.dataset_cols
+
+    def __getitem__(self, idx):
+        # convert 1D index to 2D coordinates
+        row = idx // self.dataset_cols
+        col = idx % self.dataset_cols
+
+        sprite_obj = self.sprites[row][col]
+        return sprite_obj.image, sprite_obj.direction
+
+    def split_sprite_sheet(self, dataset_dir):
+        # TODO: implement this
+        return []
+
+    def set_directions(self, sprites):
+        # TODO: implement this
+        return []
+
+
+
+
+
+
+
+
+# load datasets
+
+# data loading
+
+
+
+# ------------------------------------------
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
-
-def load_datasets(train_data_dir, test_data_dir):
-    # Define transforms
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                           std=[0.229, 0.224, 0.225])
-    ])
-
-    # Load training dataset
-    train_dataset = datasets.ImageFolder(train_data_dir, transform=transform)
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-
-    # Load testing dataset
-    test_dataset = datasets.ImageFolder(test_data_dir, transform=transform)
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)  # Don't shuffle test data
-
-    print(f"Training samples: {len(train_dataset)}")
-    print(f"Test samples: {len(test_dataset)}")
-    print(f"Classes: {train_dataset.classes}")
-
-    return train_loader, test_loader, train_dataset, test_dataset
-
-train_loader, test_loader, train_dataset, test_dataset = load_datasets('./dataset/train', './dataset/test')
