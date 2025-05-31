@@ -22,6 +22,7 @@ batch size 128
 
 *thanks claudio for the code*
 
+- 5 epochs
 - Criterion (loss): CrossEntropyLoss
 - Optimizer: Adam (lr = 0.001)
 
