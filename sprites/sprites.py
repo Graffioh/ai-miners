@@ -252,17 +252,38 @@ def train_sprites(model, data_loader, criterion, optimizer, epochs=5):
 
     return train_losses
 
-def main():
-    train_dataset_path = "./dataset/train"
-    #print_dataset(train_dataset_path)
+def test_model(model, test_loader):
+    model.eval()
+    correct = 0
+    total = 0
 
-    test_dataset_path = "./dataset/test"
+    with torch.no_grad():
+        for data, target in test_loader:
+            data, target = data.to(device), target.to(device)
+            output = model(data)
+            _, predicted = torch.max(output, 1)
+            total += target.size(0)
+            correct += (predicted == target).sum().item()
+
+    accuracy = 100 * correct / total
+    return accuracy
+
+def main():
+    # google drive for colab
+    train_dataset_path = "/content/drive/MyDrive/shadowless/train"
+    test_dataset_path = "/content/drive/MyDrive/shadowless/test"
+
+    # local
+    #train_dataset_path = "./dataset/train"
+    #test_dataset_path = "./dataset/test"
+
+    #print_dataset(train_dataset_path)
     #print_dataset(test_dataset_path)
 
     transform = transforms.Compose([
         transforms.ToPILImage(),
-        transforms.ToTensor(),  # Converts to [0,1] range
-        transforms.Normalize((0.5, 0.5, 0.5, 0.5), (0.5, 0.5, 0.5, 0.5))  # Normalize to [-1,1]
+        transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5, 0.5), (0.5, 0.5, 0.5, 0.5))
     ])
 
     train_dataset = SpriteDataset(train_dataset_path, transform)
@@ -272,13 +293,17 @@ def main():
     test_data = DataLoader(test_dataset, batch_size=128, shuffle=False)
 
     model = SpriteDirectionCNN().to(device)
-    criterion = nn.CrossEntropyLoss()  # Good for classification
-    optimizer = optim.Adam(model.parameters(), lr=0.01)  # Adam optimizer
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(model.parameters(), lr=0.001)
 
     train_losses = train_sprites(model, train_data, criterion, optimizer)
-    print("YOOOOOOOOOOOOOOOOOOOOOOO")
-    print(train_losses)
 
+    print(f"Train losses: {train_losses}")
+
+    print("+---------------------------------------+")
+    print("\nTesting the model...")
+    test_accuracy = test_model(model, test_data)
+    print(f'Test Accuracy: {test_accuracy:.2f}%')
 
 
 if __name__ == "__main__":
