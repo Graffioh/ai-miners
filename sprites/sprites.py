@@ -8,21 +8,19 @@ from dataset.dataset import SpriteDataset
 from models.simpleCNN import SimpleCNN
 from training.train import train_sprites
 from evaluation.test import test_model
+from utils.util import print_dataset
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
 def main():
     # google drive for colab
-    train_dataset_path = "/content/drive/MyDrive/shadowless/train"
-    test_dataset_path = "/content/drive/MyDrive/shadowless/test"
+    #train_dataset_path = "/content/drive/MyDrive/shadowless/train"
+    #test_dataset_path = "/content/drive/MyDrive/shadowless/test"
 
     # local
-    #train_dataset_path = "./dataset/train"
-    #test_dataset_path = "./dataset/test"
-
-    #util.print_dataset(train_dataset_path)
-    #util.print_dataset(test_dataset_path)
+    train_dataset_path = "./dataset/train"
+    test_dataset_path = "./dataset/test"
 
     transform = transforms.Compose([
         transforms.ToPILImage(),
@@ -33,6 +31,13 @@ def main():
     print("Loading dataset...")
     train_dataset = SpriteDataset(train_dataset_path, transform)
     test_dataset = SpriteDataset(test_dataset_path, transform)
+
+    print("++ Testing Train dataset ++")
+    print_dataset(train_dataset)
+
+    print("++ Testing Test dataset ++")
+    print_dataset(test_dataset)
+
     train_data = DataLoader(train_dataset, batch_size=128, shuffle=True)
     test_data = DataLoader(test_dataset, batch_size=128, shuffle=False)
 

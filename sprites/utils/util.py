@@ -1,13 +1,10 @@
-def print_dataset(dataset_path):
+def print_dataset(dataset):
     """Print the dataset to verify that loading works correctly"""
 
     print("+---------------------------------------+")
-    print(f"Testing SpriteDataset {dataset_path}")
+    print("Testing SpriteDataset")
 
     try:
-        # Create dataset
-        dataset = SpriteDataset(dataset_path)
-
         # Basic info
         print(f"Dataset loaded: {len(dataset)} sprites")
         print(f"Directions: {dataset.directions}")
