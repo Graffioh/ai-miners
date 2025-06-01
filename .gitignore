@@ -4,5 +4,6 @@ mnist_model.pth
 
 sprites/dataset/test
 sprites/dataset/train
+sprites/dataset/shadowless/
 
 **/__pycache__

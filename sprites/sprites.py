@@ -10,13 +10,41 @@ from evaluation.test import test_model
 from utils.util import print_dataset
 from config import Config
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+def get_device():
+    if torch.backends.mps.is_available():
+        return torch.device("mps")
+    elif torch.cuda.is_available():
+        return torch.device("cuda")
+    return torch.device("cpu")
+
+device = get_device()
+
 print(f"Using device: {device}")
 
 def main():
+    config = Config()
+
+    print(f"🚀 Starting new training run: {config.manager.run_id}")
+    print(f"📁 Run directory: {config.manager.run_dir}")
+    print("-" * 60)
+
+    # Save configuration for this run
+    config_log_path = config.manager.get_log_path("config")
+    with open(config_log_path, "w") as f:
+        f.write("Training Configuration\n")
+        f.write("====================\n")
+        f.write(f"Run ID: {config.manager.run_id}\n")
+        f.write(f"Learning Rate: {config.LEARNING_RATE}\n")
+        f.write(f"Batch Size: {config.BATCH_SIZE}\n")
+        f.write(f"Epochs: {config.EPOCHS}\n")
+        f.write(f"Device: {device}\n")
+        f.write(f"Use Colab: {config.USE_COLAB}\n")
+        f.write(f"Train Path: {config.get_train_path()}\n")
+        f.write(f"Test Path: {config.get_test_path()}\n")
+
     print("Loading dataset...")
-    train_dataset = SpriteDataset(Config.get_train_path(), Config.get_transform())
-    test_dataset = SpriteDataset(Config.get_test_path(), Config.get_transform())
+    train_dataset = SpriteDataset(config.get_train_path(), config.get_transform())
+    test_dataset = SpriteDataset(config.get_test_path(), config.get_transform())
 
     print("++ Testing Train dataset ++")
     print_dataset(train_dataset)
@@ -24,25 +52,43 @@ def main():
     print("++ Testing Test dataset ++")
     print_dataset(test_dataset)
 
-    train_data = DataLoader(train_dataset, batch_size=Config.BATCH_SIZE, shuffle=Config.SHUFFLE_TRAIN)
-    test_data = DataLoader(test_dataset, batch_size=Config.BATCH_SIZE, shuffle=Config.SHUFFLE_TEST)
+    train_data = DataLoader(train_dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE_TRAIN)
+    test_data = DataLoader(test_dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE_TEST)
 
     model = SimpleCNN().to(device)
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=Config.LEARNING_RATE)
+    optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE)
 
-    train_losses = train_sprites(model, train_data, criterion, optimizer, device, Config.EPOCHS)
-    print(f"Train losses: {train_losses}\n")
+    print(f"Starting training for {config.EPOCHS} epochs...")
+    train_losses = train_sprites(model, train_data, criterion, optimizer, device, config, config.EPOCHS)
 
     print("+---------------------------------------+")
     print("\nTesting the model...")
-    test_accuracy = test_model(model, test_data, device)
-    print(f'Test Accuracy: {test_accuracy:.2f}%')
+    test_accuracy = test_model(model, test_data, device, config)
 
-    # Save model if enabled
-    if Config.SAVE_MODEL:
-        torch.save(model.state_dict(), Config.MODEL_SAVE_PATH)
-        print(f"Model saved to {Config.MODEL_SAVE_PATH}")
+    # Save model using RunManager
+    if config.SAVE_MODEL:
+        model_path = config.manager.get_model_path("final_model")
+        torch.save(model.state_dict(), model_path)
+        print(f"Model saved to: {model_path}")
+
+        # Also save model info
+        model_info_path = config.manager.get_log_path("model_info")
+        with open(model_info_path, "w") as f:
+            f.write("Model Information\n")
+            f.write("=================\n")
+            f.write(f"Model Type: SimpleCNN\n")
+            f.write(f"Final Test Accuracy: {test_accuracy:.2f}%\n")
+            f.write(f"Training Epochs: {config.EPOCHS}\n")
+            f.write(f"Total Parameters: {sum(p.numel() for p in model.parameters())}\n")
+            f.write(f"Trainable Parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}\n")
+
+    print("\nTraining completed!")
+    print(f"Final Test Accuracy: {test_accuracy:.2f}%")
+    print(f"All files saved to: {config.manager.run_dir}")
+    print(f"   Plots: {config.manager.plots_dir}")
+    print(f"   Model: {config.manager.models_dir}")
+    print(f"   Logs: {config.manager.logs_dir}")
 
 if __name__ == "__main__":
     main()
