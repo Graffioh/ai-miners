@@ -4,3 +4,5 @@ mnist_model.pth
 
 sprites/dataset/test
 sprites/dataset/train
+
+**/__pycache__
