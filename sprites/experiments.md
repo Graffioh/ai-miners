@@ -14,14 +14,17 @@ train and test have different character structure/template
 
 train shuffled
 
+batch size 128
+
 (soon™) mini batch stratified sampling
 
 ## Experiments
 
 *thanks claudio for the code*
 
+- 5 epochs
 - Criterion (loss): CrossEntropyLoss
-- Optimizer: Adam
+- Optimizer: Adam (lr = 0.001)
 
 ### Fully Connected NN
 
@@ -59,7 +62,7 @@ class SimpleNN(nn.Module):
 
 ### CNN
 
-81~% test accuracy
+83~% test accuracy
 
 #### Code
 
