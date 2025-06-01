@@ -2,4 +2,5 @@ mnist/venv
 mnist/data/*
 mnist_model.pth
 
-sprites/dataset
+sprites/dataset/test
+sprites/dataset/train
