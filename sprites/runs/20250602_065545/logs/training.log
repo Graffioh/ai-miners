@@ -1,0 +1,5 @@
+Epoch 1/5 - Loss: 1.0437, Accuracy: 64.52%
+Epoch 2/5 - Loss: 0.5317, Accuracy: 82.65%
+Epoch 3/5 - Loss: 0.3632, Accuracy: 87.94%
+Epoch 4/5 - Loss: 0.2772, Accuracy: 90.79%
+Epoch 5/5 - Loss: 0.2264, Accuracy: 92.39%

@@ -1,0 +1,7 @@
+Model Information
+=================
+Model Type: SimpleCNN
+Final Test Accuracy: 83.56%
+Training Epochs: 5
+Total Parameters: 8844520
+Trainable Parameters: 8844520

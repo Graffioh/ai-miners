@@ -1,0 +1,15 @@
+Test Results
+============
+Overall Accuracy: 83.56%
+Total samples: 22320
+Correct predictions: 18650
+
+Per-Direction Results:
+Direction 0 (West): 83.94% (2342/2790)
+Direction 1 (SW): 82.94% (2314/2790)
+Direction 2 (South): 84.62% (2361/2790)
+Direction 3 (SE): 83.44% (2328/2790)
+Direction 4 (East): 79.53% (2219/2790)
+Direction 5 (NE): 88.21% (2461/2790)
+Direction 6 (North): 83.23% (2322/2790)
+Direction 7 (NW): 82.54% (2303/2790)

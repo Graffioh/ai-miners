@@ -45,6 +45,7 @@ class Config:
 
         # Local paths
         self.TRAIN_PATH = defaults.get('TRAIN_PATH', "./dataset/shadowless/train")
+        self.VALIDATION_PATH = defaults.get('VALIDATION_PATH', "./dataset/shadowless/validation")
         self.TEST_PATH = defaults.get('TEST_PATH', "./dataset/shadowless/test")
         self.PLOT_DIR = defaults.get('PLOT_DIR', "./plots")
 
@@ -79,6 +80,9 @@ class Config:
 
     def get_train_path(self):
         return self.TRAIN_PATH
+
+    def get_validation_path(self):
+        return self.VALIDATION_PATH
 
     def get_test_path(self):
         return self.TEST_PATH

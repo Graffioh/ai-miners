@@ -40,19 +40,25 @@ def main():
         f.write(f"Device: {device}\n")
         f.write(f"Use Colab: {config.USE_COLAB}\n")
         f.write(f"Train Path: {config.get_train_path()}\n")
+        f.write(f"Validation Path: {config.get_validation_path()}\n")
         f.write(f"Test Path: {config.get_test_path()}\n")
 
     print("Loading dataset...")
     train_dataset = SpriteDataset(config.get_train_path(), config.get_transform())
+    validation_dataset = SpriteDataset(config.get_test_path(), config.get_transform())
     test_dataset = SpriteDataset(config.get_test_path(), config.get_transform())
 
     print("++ Testing Train dataset ++")
     print_dataset(train_dataset)
 
+    print("++ Testing Validation dataset ++")
+    print_dataset(validation_dataset)
+
     print("++ Testing Test dataset ++")
     print_dataset(test_dataset)
 
     train_data = DataLoader(train_dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE_TRAIN)
+    validation_data = DataLoader(validation_dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE_TEST)
     test_data = DataLoader(test_dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE_TEST)
 
     model = SimpleCNN().to(device)
@@ -64,6 +70,7 @@ def main():
 
     print("+---------------------------------------+")
     print("\nTesting the model...")
+    validation_accuracy = test_model(model, validation_data, device, config)
     test_accuracy = test_model(model, test_data, device, config)
 
     # Save model using RunManager
@@ -78,12 +85,14 @@ def main():
             f.write("Model Information\n")
             f.write("=================\n")
             f.write(f"Model Type: SimpleCNN\n")
+            f.write(f"Final Validation Accuracy: {validation_accuracy:.2f}%\n")
             f.write(f"Final Test Accuracy: {test_accuracy:.2f}%\n")
             f.write(f"Training Epochs: {config.EPOCHS}\n")
             f.write(f"Total Parameters: {sum(p.numel() for p in model.parameters())}\n")
             f.write(f"Trainable Parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}\n")
 
     print("\nTraining completed!")
+    print(f"Final Validation Accuracy: {validation_accuracy:.2f}%")
     print(f"Final Test Accuracy: {test_accuracy:.2f}%")
     print(f"All files saved to: {config.manager.run_dir}")
     print(f"   Plots: {config.manager.plots_dir}")

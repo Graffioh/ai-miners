@@ -1,0 +1,10 @@
+Training Configuration
+====================
+Run ID: 20250602_065545
+Learning Rate: 0.001
+Batch Size: 128
+Epochs: 5
+Device: mps
+Use Colab: False
+Train Path: ./dataset/shadowless/train
+Test Path: ./dataset/shadowless/test
