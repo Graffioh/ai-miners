@@ -13,7 +13,7 @@ def test_model(model, test_loader, device, config=None):
     class_total = list(0. for i in range(8))
 
     with torch.no_grad():
-        for character, img_data, target, action in test_loader:
+        for _, img_data, target, _ in test_loader:
             img_data, target = img_data.to(device), target.to(device)
             output = model(img_data)
             _, predicted = torch.max(output, 1)

@@ -1,3 +1,19 @@
+def pick_model_architecture_menu(config):
+    print("+---------------------------------------+")
+    print("\nSelect model architecture:")
+    print(f"1. {config.MODEL_ARCHITECTURE_FCN} (SimpleNN)")
+    print(f"2. {config.MODEL_ARCHITECTURE_CNN} (SimpleCNN)")
+    choice = input("Enter 1 or 2: ").strip()
+    if choice == "1":
+        return config.MODEL_ARCHITECTURE_FCN
+    elif choice == "2":
+        return config.MODEL_ARCHITECTURE_CNN
+    else:
+        print("Invalid choice, defaulting to FCN")
+        return config.MODEL_ARCHITECTURE_FCN
+
+    print("+---------------------------------------+")
+
 def print_dataset(dataset):
     """Print the dataset to verify that loading works correctly"""
 

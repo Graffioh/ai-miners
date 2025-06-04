@@ -52,6 +52,8 @@ class Config:
         # ============================================================================
         # TRAINING
         # ============================================================================
+        self.MODEL_ARCHITECTURE_FCN = defaults.get('MODEL_ARCHITECTURE_FCN', "FCN")
+        self.MODEL_ARCHITECTURE_CNN = defaults.get('MODEL_ARCHITECTURE_CNN', "CNN")
         self.LEARNING_RATE = defaults.get('LEARNING_RATE', 0.001)
         self.BATCH_SIZE = defaults.get('BATCH_SIZE', 128)
         self.EPOCHS = 5
@@ -63,10 +65,8 @@ class Config:
         self.SHUFFLE_TEST = defaults.get('SHUFFLE_TEST', False)
 
         # Normalization values
-        self.NORMALIZE_MEAN = defaults.get('NORMALIZE_MEAN', [0.013441166840493679, 0.010885078459978104,
-                        0.010833792388439178, 0.04079267755150795])
-        self.NORMALIZE_STD = defaults.get('NORMALIZE_STD', [0.07362207025289536, 0.06255189329385757,
-                        0.0627019852399826, 0.18982279300689697])
+        self.NORMALIZE_MEAN = defaults.get('NORMALIZE_MEAN', [0.5, 0.5, 0.5, 0.5])
+        self.NORMALIZE_STD = defaults.get('NORMALIZE_STD', [0.5, 0.5, 0.5, 0.5])
 
         # ============================================================================
         # SAVING

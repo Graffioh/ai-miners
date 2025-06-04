@@ -19,7 +19,7 @@ def train_sprites(model, data_loader, criterion, optimizer, device, config, epoc
         epoch_class_outputs = []
         epoch_class_targets = []
 
-        for batch_idx, (character, img_data, target, action) in enumerate(data_loader):
+        for batch_idx, (_, img_data, target, _) in enumerate(data_loader):
             # Move data to device (GPU if available)
             img_data, target = img_data.to(device), target.to(device)
 
