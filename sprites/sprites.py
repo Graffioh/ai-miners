@@ -36,7 +36,6 @@ def main():
         f.write("Training Configuration\n")
         f.write("====================\n")
         f.write(f"Run ID: {config.manager.run_id}\n")
-        f.write(f"Model Architecture: {model_architecture_choice}")
         f.write(f"Learning Rate: {config.LEARNING_RATE}\n")
         f.write(f"Batch Size: {config.BATCH_SIZE}\n")
         f.write(f"Epochs: {config.EPOCHS}\n")
@@ -92,7 +91,7 @@ def main():
         with open(model_info_path, "w") as f:
             f.write("Model Information\n")
             f.write("=================\n")
-            f.write(f"Model Type: SimpleCNN\n")
+            f.write(f"Model Architecture: {model_architecture_choice}")
             f.write(f"Final Validation Accuracy: {validation_accuracy:.2f}%\n")
             f.write(f"Final Test Accuracy: {test_accuracy:.2f}%\n")
             f.write(f"Training Epochs: {config.EPOCHS}\n")
