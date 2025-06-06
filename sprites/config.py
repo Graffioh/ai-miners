@@ -44,15 +44,15 @@ class Config:
         self.USE_COLAB = False  # Set to True when running on Colab
 
         # Local paths
-        self.TRAIN_PATH = defaults.get('TRAIN_PATH', "./dataset/shadowless/train")
-        self.VALIDATION_PATH = defaults.get('VALIDATION_PATH', "./dataset/shadowless/validation")
-        self.TEST_PATH = defaults.get('TEST_PATH', "./dataset/shadowless/test")
+        self.TRAIN_PATH = defaults.get('TRAIN_PATH', "./dataset/shadowless_template/train")
+        self.TEST_PATH = defaults.get('TEST_PATH', "./dataset/shadowless_template/test")
         self.PLOT_DIR = defaults.get('PLOT_DIR', "./plots")
 
         # ============================================================================
         # TRAINING
         # ============================================================================
         self.MODEL_ARCHITECTURE_FCN = defaults.get('MODEL_ARCHITECTURE_FCN', "FCN")
+        self.MODEL_ARCHITECTURE_FCN_BN = defaults.get('MODEL_ARCHITECTURE_FCN_BN', "FCN with Batch Norm")
         self.MODEL_ARCHITECTURE_CNN = defaults.get('MODEL_ARCHITECTURE_CNN', "CNN")
         self.LEARNING_RATE = defaults.get('LEARNING_RATE', 0.001)
         self.BATCH_SIZE = defaults.get('BATCH_SIZE', 128)
@@ -93,7 +93,6 @@ class Config:
 
     def get_transform(self):
         return transforms.Compose([
-            transforms.ToPILImage(),
             transforms.ToTensor(),
             transforms.Normalize(mean=self.NORMALIZE_MEAN, std=self.NORMALIZE_STD)
         ])

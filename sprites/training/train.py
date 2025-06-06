@@ -81,5 +81,3 @@ def train_sprites(model, data_loader, criterion, optimizer, device, config, epoc
         plotter.plot_class_losses(config.manager.get_plot_path("class_losses"))
 
         print(f"✅ Plots saved to: {config.manager.plots_dir}")
-
-    return plotter.train_losses if plotter else []

@@ -1,9 +1,11 @@
+**/__pycache__
+
 mnist/venv
 mnist/data/*
 mnist_model.pth
 
 sprites/dataset/test
 sprites/dataset/train
-sprites/dataset/shadowless/
-
-**/__pycache__
+sprites/dataset/shadowless_random
+sprites/dataset/shadowless_template
+sprites/runs
