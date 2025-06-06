@@ -1,0 +1,13 @@
+Training Configuration
+====================
+Run ID: 20250606_063635
+Learning Rate: 0.001
+Batch Size: 128
+Epochs: 5
+Transform normalization mean: [0.5, 0.5, 0.5, 0.5]
+Transform normalization std: [0.5, 0.5, 0.5, 0.5]
+Device: mps
+Use Colab: False
+Train Path: ./dataset/shadowless/train
+Validation Path: ./dataset/shadowless/validation
+Test Path: ./dataset/shadowless/test

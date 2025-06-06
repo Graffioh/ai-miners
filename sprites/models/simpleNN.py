@@ -10,7 +10,7 @@ class SimpleNN(nn.Module):
         self.fc3 = nn.Linear(512, 128)
         self.fc4 = nn.Linear(128, num_classes)  # Output: 8 directions
 
-        self.dropout = nn.Dropout(0.3)
+        self.dropout = nn.Dropout(0.2)
         self.relu = nn.ReLU()
 
     def forward(self, x):

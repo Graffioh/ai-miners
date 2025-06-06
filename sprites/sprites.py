@@ -8,7 +8,7 @@ from models.simpleCNN import SimpleCNN
 from models.simpleNN import SimpleNN
 from training.train import train_sprites
 from evaluation.test import test_model
-from utils.util import print_dataset, pick_model_menu
+from utils.util import print_dataset, pick_model_architecture_menu
 from config import Config
 
 def get_device():
@@ -66,9 +66,9 @@ def main():
     test_data = DataLoader(test_dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE_TEST)
 
     model = None
-    if model_choice == config.MODEL_ARCHITECTURE_FCN:
+    if model_architecture_choice == config.MODEL_ARCHITECTURE_FCN:
         model = SimpleNN().to(device)
-    elif model_choice == config.MODEL_ARCHITECTURE_CNN:
+    elif model_architecture_choice == config.MODEL_ARCHITECTURE_CNN:
         model = SimpleCNN().to(device)
 
     criterion = nn.CrossEntropyLoss()
