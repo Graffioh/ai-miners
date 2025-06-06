@@ -49,7 +49,7 @@ def main():
 
     print("Loading dataset...")
     train_dataset = SpriteDataset(config.get_train_path(), config.get_transform())
-    validation_dataset = SpriteDataset(config.get_test_path(), config.get_transform())
+    validation_dataset = SpriteDataset(config.get_validation_path(), config.get_transform())
     test_dataset = SpriteDataset(config.get_test_path(), config.get_transform())
 
     print("++ Testing Train dataset ++")
