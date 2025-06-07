@@ -5,6 +5,7 @@ import torch.optim as optim
 
 from dataset.dataset import SpriteDataset
 from models.simpleCNN import SimpleCNN
+from models.simpleCNN_BN import SimpleCNN_BN
 from models.simpleNN import SimpleNN
 from models.simpleNN_BN import SimpleNN_BN
 from training.train import train_sprites
@@ -59,6 +60,8 @@ def main():
         model = SimpleNN_BN().to(device)
     elif model_architecture_choice == config.MODEL_ARCHITECTURE_CNN:
         model = SimpleCNN().to(device)
+    elif model_architecture_choice == config.MODEL_ARCHITECTURE_CNN_BN:
+        model = SimpleCNN_BN().to(device)
 
     if model is None:
         print(f"❌ Error Model architecture ❌: '{model_architecture_choice}' not recognized. Exiting.")

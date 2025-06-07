@@ -1,5 +1,5 @@
 import torch
-from sprites.utils.plotter import TrainingPlotter
+from utils.plotter import TrainingPlotter
 
 def train_sprites(model, data_loader, criterion, optimizer, device, config, epochs=5):
     """

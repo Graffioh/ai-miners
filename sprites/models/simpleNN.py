@@ -1,6 +1,9 @@
 import torch.nn as nn
 
 class SimpleNN(nn.Module):
+    """
+    Simple NN copied from mnist example
+    """
     def __init__(self, num_classes=8):
         super(SimpleNN, self).__init__()
         input_size = 128 * 128 * 4  # 65,536 for RGBA

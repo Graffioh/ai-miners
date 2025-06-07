@@ -2,20 +2,23 @@ from torch.utils.data import Subset
 
 def pick_model_architecture_menu(config):
     print("+---------------------------------------+")
-    print("\nSelect model architecture:")
+    print("\nModel architectures available:")
     print(f"1. {config.MODEL_ARCHITECTURE_FCN} (SimpleNN)")
-    print(f"2. {config.MODEL_ARCHITECTURE_CNN} (SimpleCNN)")
-    print(f"3. {config.MODEL_ARCHITECTURE_FCN_BN} (SimpleNN_BN)") # New option
-    choice = input("Enter 1, 2, or 3: ").strip()
+    print(f"2. {config.MODEL_ARCHITECTURE_FCN_BN} (SimpleNN_BN)") 
+    print(f"3. {config.MODEL_ARCHITECTURE_CNN} (SimpleCNN)")
+    print(f"4. {config.MODEL_ARCHITECTURE_CNN_BN} (SimpleCNN_BN)") 
+    choice = input("Select: ").strip()
     if choice == "1":
         return config.MODEL_ARCHITECTURE_FCN
     elif choice == "2":
-        return config.MODEL_ARCHITECTURE_CNN
+        return config.MODEL_ARCHITECTURE_FCN_BN 
     elif choice == "3":
-        return config.MODEL_ARCHITECTURE_FCN_BN # Handle new choice
+        return config.MODEL_ARCHITECTURE_CNN
+    elif choice == "4":
+        return config.MODEL_ARCHITECTURE_CNN_BN 
     else:
-        print(f"Invalid choice, defaulting to {config.MODEL_ARCHITECTURE_FCN}")
-        return config.MODEL_ARCHITECTURE_FCN # Default choice
+        print(f"Invalid choice, defaulting to {config.MODEL_ARCHITECTURE_CNN}")
+        return config.MODEL_ARCHITECTURE_CNN
 
 def print_dataset(dataset):
     """Print the dataset to verify that loading works correctly"""

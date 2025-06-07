@@ -1,7 +1,9 @@
-import torch
 import torch.nn as nn
 
 class SimpleNN_BN(nn.Module):
+    """
+    Simple NN but with Batch Normalization
+    """
     def __init__(self, num_classes=8):
         super(SimpleNN_BN, self).__init__()
         input_size = 128 * 128 * 4  # 65,536 for RGBA
