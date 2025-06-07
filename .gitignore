@@ -1,3 +1,5 @@
+.DS_Store
+
 **/__pycache__
 
 mnist/venv
@@ -9,3 +11,5 @@ sprites/dataset/train
 sprites/dataset/shadowless_random
 sprites/dataset/shadowless_template
 sprites/runs
+
+sprites/venv
