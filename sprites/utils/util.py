@@ -1,4 +1,3 @@
-import torch 
 from torch.utils.data import Subset 
 
 def pick_model_architecture_menu(config):
@@ -17,9 +16,6 @@ def pick_model_architecture_menu(config):
     else:
         print(f"Invalid choice, defaulting to {config.MODEL_ARCHITECTURE_FCN}")
         return config.MODEL_ARCHITECTURE_FCN # Default choice
-
-    # This print was inside the function, usually it's outside or not present
-    # print("+---------------------------------------+") 
 
 def print_dataset(dataset):
     """Print the dataset to verify that loading works correctly"""
@@ -80,70 +76,37 @@ def print_dataset(dataset):
         print(f"❌ Error during print_dataset: {e}")
         import traceback
         traceback.print_exc()
-
-
-def save_training_results(
-    config, 
-    model, 
-    model_architecture_choice,
-    overall_validation_accuracy, 
-    validation_dir_accuracies, 
-    validation_char_accuracies,
-    overall_test_accuracy, 
-    test_dir_accuracies, 
-    test_char_accuracies
-):
-    """
-    Saves the model and a summary of training/evaluation results if config.SAVE_MODEL is True.
-    """
-    if not config.SAVE_MODEL:
-        return
-
-    # Save the model
-    model_path = config.manager.get_model_path(f"final_model_{model_architecture_choice}")
-    try:
-        torch.save(model.state_dict(), model_path)
-        print(f"Model saved to: {model_path}")
-    except Exception as e:
-        print(f"❌ Error saving model to {model_path}: {e}")
-        return 
-
-    # Save model information and results log
-    model_info_path = config.manager.get_log_path("model_info")
-    try:
-        with open(model_info_path, "w") as f:
-            f.write("Model Information\n=================\n")
-            f.write(f"Model Architecture: {model_architecture_choice}\n")
-            
-            f.write(f"\n--- Validation Set Results ---\n")
-            f.write(f"Overall Validation Accuracy: {overall_validation_accuracy:.2f}%\n")
-            if validation_dir_accuracies:
-                f.write("Validation Accuracies per Direction:\n")
-                for direction, acc in sorted(validation_dir_accuracies.items()): # Sort for consistent output
-                    f.write(f"  - {direction}: {acc:.2f}%\n")
-            if validation_char_accuracies:
-                f.write("Validation Accuracies per Character (for direction prediction):\n")
-                for char, acc in sorted(validation_char_accuracies.items()): # Sort for consistent output
-                    f.write(f"  - {char}: {acc:.2f}%\n")
-            
-            f.write(f"\n--- Test Set Results ---\n")
-            f.write(f"Overall Test Accuracy: {overall_test_accuracy:.2f}%\n")
-            if test_dir_accuracies:
-                f.write("Test Accuracies per Direction:\n")
-                for direction, acc in sorted(test_dir_accuracies.items()): # Sort for consistent output
-                    f.write(f"  - {direction}: {acc:.2f}%\n")
-            if test_char_accuracies:
-                f.write("Test Accuracies per Character (for direction prediction):\n")
-                for char, acc in sorted(test_char_accuracies.items()): # Sort for consistent output
-                    f.write(f"  - {char}: {acc:.2f}%\n")
-            
-            f.write(f"\nTraining Epochs: {config.EPOCHS}\n")
-            if model:
-                f.write(f"Total Parameters: {sum(p.numel() for p in model.parameters())}\n")
-                f.write(f"Trainable Parameters: {sum(p.numel() for p in model.parameters() if p.requires_grad)}\n")
-            else:
-                f.write("Model parameter information not available (model is None).\n")
-        print(f"Model info and results saved to: {model_info_path}")
-    except Exception as e:
-        print(f"❌ Error saving model info to {model_info_path}: {e}")
-
+    
+def log_config(config, config_log_path, device):
+    with open(config_log_path, "w") as f:
+        f.write("Training Configuration\n====================\n")
+        f.write(f"Run ID: {config.manager.run_id}\n")
+        f.write(f"Device: {device}\n\n")
+        
+        # Paths
+        f.write("PATHS:\n")
+        f.write(f"TRAIN_PATH: {config.TRAIN_PATH}\n")
+        f.write(f"TEST_PATH: {config.TEST_PATH}\n")
+        f.write(f"PLOT_DIR: {config.PLOT_DIR}\n\n")
+        
+        # Training parameters
+        f.write("TRAINING:\n")
+        f.write(f"MODEL_ARCHITECTURE_FCN: {config.MODEL_ARCHITECTURE_FCN}\n")
+        f.write(f"MODEL_ARCHITECTURE_FCN_BN: {config.MODEL_ARCHITECTURE_FCN_BN}\n")
+        f.write(f"MODEL_ARCHITECTURE_CNN: {config.MODEL_ARCHITECTURE_CNN}\n")
+        f.write(f"LEARNING_RATE: {config.LEARNING_RATE}\n")
+        f.write(f"BATCH_SIZE: {config.BATCH_SIZE}\n")
+        f.write(f"EPOCHS: {config.EPOCHS}\n")
+        f.write(f"VALIDATION_SPLIT_RATIO: {config.VALIDATION_SPLIT_RATIO}\n\n")
+        
+        # Data parameters
+        f.write("DATA:\n")
+        f.write(f"SHUFFLE_TRAIN: {config.SHUFFLE_TRAIN}\n")
+        f.write(f"SHUFFLE_TEST: {config.SHUFFLE_TEST}\n")
+        f.write(f"NORMALIZE_MEAN: {config.NORMALIZE_MEAN}\n")
+        f.write(f"NORMALIZE_STD: {config.NORMALIZE_STD}\n\n")
+        
+        # Extra parameters
+        f.write("EXTRA:\n")
+        f.write(f"SAVE_MODEL: {config.SAVE_MODEL}\n")
+        f.write(f"ENABLE_PLOTTING: {config.ENABLE_PLOTTING}\n")

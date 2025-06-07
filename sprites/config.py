@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from torchvision import transforms
 
-class RunManager:
+class RunConfigManager:
     def __init__(self, base_dir="runs"):
         self.base_dir = base_dir
         self.run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -32,7 +32,7 @@ from typing import Optional, Dict, Any
 
 class Config:
     def __init__(self, base_dir='runs', defaults: Optional[Dict[str, Any]] = None):
-        self.manager = RunManager(base_dir)
+        self.manager = RunConfigManager(base_dir)
 
         # Initialize defaults if None
         if defaults is None:
@@ -41,9 +41,6 @@ class Config:
         # ============================================================================
         # PATHS
         # ============================================================================
-        self.USE_COLAB = False  # Set to True when running on Colab
-
-        # Local paths
         self.TRAIN_PATH = defaults.get('TRAIN_PATH', "./dataset/shadowless_template/train")
         self.TEST_PATH = defaults.get('TEST_PATH', "./dataset/shadowless_template/test")
         self.PLOT_DIR = defaults.get('PLOT_DIR', "./plots")
@@ -57,6 +54,7 @@ class Config:
         self.LEARNING_RATE = defaults.get('LEARNING_RATE', 0.001)
         self.BATCH_SIZE = defaults.get('BATCH_SIZE', 128)
         self.EPOCHS = 5
+        self.VALIDATION_SPLIT_RATIO = 0.2
 
         # ============================================================================
         # DATA
@@ -64,32 +62,25 @@ class Config:
         self.SHUFFLE_TRAIN = defaults.get('SHUFFLE_TRAIN', True)
         self.SHUFFLE_TEST = defaults.get('SHUFFLE_TEST', False)
 
-        # Normalization values
+        # Starting Normalization values
         self.NORMALIZE_MEAN = defaults.get('NORMALIZE_MEAN', [0.5, 0.5, 0.5, 0.5])
         self.NORMALIZE_STD = defaults.get('NORMALIZE_STD', [0.5, 0.5, 0.5, 0.5])
 
         # ============================================================================
-        # SAVING
+        # EXTRA
         # ============================================================================
         self.SAVE_MODEL = defaults.get('SAVE_MODEL', True)
-
-        # ============================================================================
-        # PLOTTING
-        # ============================================================================
         self.ENABLE_PLOTTING = defaults.get('ENABLE_PLOTTING', True)
-
-    def get_train_path(self):
-        return self.TRAIN_PATH
-
-    def get_validation_path(self):
-        return self.VALIDATION_PATH
-
-    def get_test_path(self):
-        return self.TEST_PATH
 
     def get_plot_dir(self):
         os.makedirs(self.PLOT_DIR, exist_ok=True)
         return self.PLOT_DIR
+
+    def get_train_path(self):
+        return self.TRAIN_PATH
+
+    def get_test_path(self):
+        return self.TEST_PATH
 
     def get_transform(self):
         return transforms.Compose([

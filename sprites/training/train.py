@@ -1,5 +1,5 @@
 import torch
-from training.plotter import TrainingPlotter
+from sprites.utils.plotter import TrainingPlotter
 
 def train_sprites(model, data_loader, criterion, optimizer, device, config, epochs=5):
     """
@@ -54,11 +54,11 @@ def train_sprites(model, data_loader, criterion, optimizer, device, config, epoc
         epoch_loss = running_loss / len(data_loader)
         epoch_acc = 100 * correct / total
 
-        # Update plotter with epoch metrics
+    # == Plot & Log ==
         if plotter:
+            # Update plot for each epoch
             plotter.update(epoch_loss, epoch_acc)
 
-            # Calculate class losses for this epoch
             if epoch_class_outputs:
                 all_outputs = torch.cat(epoch_class_outputs, dim=0)
                 all_targets = torch.cat(epoch_class_targets, dim=0)
@@ -75,9 +75,9 @@ def train_sprites(model, data_loader, criterion, optimizer, device, config, epoc
     if plotter:
         print("\nGenerating training plots...")
 
-        # Save individual plots using RunManager paths
         plotter.plot_loss(config.manager.get_plot_path("training_loss"))
         plotter.plot_accuracy(config.manager.get_plot_path("training_accuracy"))
         plotter.plot_class_losses(config.manager.get_plot_path("class_losses"))
 
         print(f"✅ Plots saved to: {config.manager.plots_dir}")
+    # ==
