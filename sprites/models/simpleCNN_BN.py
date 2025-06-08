@@ -27,6 +27,7 @@ class SimpleCNN_BN(nn.Module):
         # Calculate flattened size after convolutions
         # 128x128 → 64x64 → 32x32 → 16x16 → 8x8
         self.flattened_size = 256 * 8 * 8  # 16,384 (much smaller!)
+        self.flatten = nn.Flatten()
 
         # Classifier layers with BatchNorm
         self.fc1 = nn.Linear(self.flattened_size, 512)
@@ -38,14 +39,14 @@ class SimpleCNN_BN(nn.Module):
         self.fc3 = nn.Linear(128, num_classes)
 
     def forward(self, x):
-        # Feature extraction (same aggressive pooling)
+        # Feature extraction 
         x = self.pool(self.relu(self.bn1(self.conv1(x))))  # 128→64
         x = self.pool(self.relu(self.bn2(self.conv2(x))))  # 64→32
         x = self.pool(self.relu(self.bn3(self.conv3(x))))  # 32→16
         x = self.pool(self.relu(self.bn4(self.conv4(x))))  # 16→8
 
         # Flatten for classifier
-        x = x.view(x.size(0), -1)
+        x = self.flatten(x)
 
         # Classification with BatchNorm
         x = self.relu(self.bn_fc1(self.fc1(x)))

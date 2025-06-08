@@ -13,7 +13,7 @@ class EvaluationReporter:
     def save_results(self, overall_accuracy, per_direction_dict, per_character_dict, 
                     config, total_samples, correct_predictions):
         """Save detailed results to file."""
-        results_path = config.manager.get_log_path("test_evaluation_details")
+        results_path = config.manager.get_log_path("final_test_evaluation_details")
         
         with open(results_path, "w") as f:
             f.write("Detailed Evaluation Results\n")

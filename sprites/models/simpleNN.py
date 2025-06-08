@@ -16,9 +16,11 @@ class SimpleNN(nn.Module):
         self.dropout = nn.Dropout(0.3)
         self.relu = nn.ReLU()
 
+        self.flatten = nn.Flatten()
+
     def forward(self, x):
         # Flatten: (batch_size, C, H, W) -> (batch_size, input_size)
-        x = x.view(x.size(0), -1)
+        x = self.flatten(x)
 
         x = self.relu(self.fc1(x))
         x = self.dropout(x) 

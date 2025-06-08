@@ -80,36 +80,21 @@ def print_dataset(dataset):
         import traceback
         traceback.print_exc()
     
-def log_config(config, config_log_path, device):
-    with open(config_log_path, "w") as f:
-        f.write("Training Configuration\n====================\n")
-        f.write(f"Run ID: {config.manager.run_id}\n")
+def log_hyperparameters_config(config, config_manager, device, model_arch):
+    with open(config_manager.get_log_path("hyperparameters"), "w") as f:
+        f.write(f"Run ID: {config_manager.run_id}\n")
         f.write(f"Device: {device}\n\n")
+
+        f.write(f"MODEL ARCHITECTURE: {model_arch}\n\n")
         
-        # Paths
-        f.write("PATHS:\n")
-        f.write(f"TRAIN_PATH: {config.TRAIN_PATH}\n")
-        f.write(f"TEST_PATH: {config.TEST_PATH}\n")
-        f.write(f"PLOT_DIR: {config.PLOT_DIR}\n\n")
-        
-        # Training parameters
         f.write("TRAINING:\n")
-        f.write(f"MODEL_ARCHITECTURE_FCN: {config.MODEL_ARCHITECTURE_FCN}\n")
-        f.write(f"MODEL_ARCHITECTURE_FCN_BN: {config.MODEL_ARCHITECTURE_FCN_BN}\n")
-        f.write(f"MODEL_ARCHITECTURE_CNN: {config.MODEL_ARCHITECTURE_CNN}\n")
         f.write(f"LEARNING_RATE: {config.LEARNING_RATE}\n")
         f.write(f"BATCH_SIZE: {config.BATCH_SIZE}\n")
         f.write(f"EPOCHS: {config.EPOCHS}\n")
         f.write(f"VALIDATION_SPLIT_RATIO: {config.VALIDATION_SPLIT_RATIO}\n\n")
         
-        # Data parameters
         f.write("DATA:\n")
         f.write(f"SHUFFLE_TRAIN: {config.SHUFFLE_TRAIN}\n")
         f.write(f"SHUFFLE_TEST: {config.SHUFFLE_TEST}\n")
         f.write(f"NORMALIZE_MEAN: {config.NORMALIZE_MEAN}\n")
         f.write(f"NORMALIZE_STD: {config.NORMALIZE_STD}\n\n")
-        
-        # Extra parameters
-        f.write("EXTRA:\n")
-        f.write(f"SAVE_MODEL: {config.SAVE_MODEL}\n")
-        f.write(f"ENABLE_PLOTTING: {config.ENABLE_PLOTTING}\n")

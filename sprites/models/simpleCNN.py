@@ -21,6 +21,7 @@ class SimpleCNN(nn.Module):
         # Calculate flattened size after convolutions
         # 128x128 → 64x64 → 32x32 → 16x16 → 8x8
         self.flattened_size = 256 * 8 * 8  # 16,384 (much smaller!)
+        self.flatten = nn.Flatten()
 
         # Classifier layers
         self.fc1 = nn.Linear(self.flattened_size, 512)
@@ -35,7 +36,7 @@ class SimpleCNN(nn.Module):
         x = self.pool(self.relu(self.conv4(x)))  # 16→8
 
         # Flatten for classifier
-        x = x.view(x.size(0), -1)
+        x = self.flatten(x)
 
         # Classification
         x = self.relu(self.fc1(x))

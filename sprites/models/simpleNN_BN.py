@@ -16,12 +16,15 @@ class SimpleNN_BN(nn.Module):
         self.bn3 = nn.BatchNorm1d(128)  
         self.fc4 = nn.Linear(128, num_classes)  
 
-        self.dropout = nn.Dropout(0.3)
+        self.dropout = nn.Dropout(0.5)
         self.relu = nn.ReLU()
+
+        self.flatten = nn.Flatten()
 
     def forward(self, x):
         # Flatten: (batch_size, C, H, W) -> (batch_size, input_size)
-        x = x.view(x.size(0), -1) 
+        
+        x = self.flatten(x)
 
         x = self.fc1(x)
         x = self.bn1(x)

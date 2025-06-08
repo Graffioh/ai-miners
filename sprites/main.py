@@ -10,8 +10,9 @@ from models.simpleNN import SimpleNN
 from models.simpleNN_BN import SimpleNN_BN
 from training.train import train_sprites
 from evaluation.evaluation_orchestrator import evaluate_model
-from utils.util import pick_model_architecture_menu, log_config
+from utils.util import pick_model_architecture_menu, log_hyperparameters_config
 from config import Config
+from hyperparameters import HyperparametersConfig
 
 torch.manual_seed(42)
 
@@ -27,40 +28,41 @@ print(f"Using device: {device}")
 
 def main():
     config = Config()
-    model_architecture_choice = pick_model_architecture_menu(config)
+    hyperparameters_config = HyperparametersConfig()
+    model_architecture_choice = pick_model_architecture_menu(hyperparameters_config)
 
-    log_config(config, config.manager.get_log_path("config"), device)
+    log_hyperparameters_config(hyperparameters_config, config.manager, device, model_architecture_choice)
 
     # == Train - Validation - Test
     print("Loading datasets...")
-    full_train_dataset = SpriteDataset(config.get_train_path(), config.get_transform())
+    full_train_dataset = SpriteDataset(config.get_train_path(), hyperparameters_config.get_transform())
 
     num_total_train_samples = len(full_train_dataset)
-    num_validation_samples = int(config.VALIDATION_SPLIT_RATIO * num_total_train_samples)
+    num_validation_samples = int(hyperparameters_config.VALIDATION_SPLIT_RATIO * num_total_train_samples)
     num_train_samples = num_total_train_samples - num_validation_samples
 
     generator = torch.Generator().manual_seed(42) 
     train_dataset, validation_dataset = random_split(full_train_dataset, 
                                                       [num_train_samples, num_validation_samples],
                                                       generator=generator)
-    test_dataset = SpriteDataset(config.get_test_path(), config.get_transform())
+    test_dataset = SpriteDataset(config.get_test_path(), hyperparameters_config.get_transform())
     # ==
 
     # == Data loaders ==
-    train_data = DataLoader(train_dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE_TRAIN)
-    validation_data = DataLoader(validation_dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE_TEST) 
-    test_data = DataLoader(test_dataset, batch_size=config.BATCH_SIZE, shuffle=config.SHUFFLE_TEST)
+    train_data = DataLoader(train_dataset, batch_size=hyperparameters_config.BATCH_SIZE, shuffle=hyperparameters_config.SHUFFLE_TRAIN)
+    validation_data = DataLoader(validation_dataset, batch_size=hyperparameters_config.BATCH_SIZE, shuffle=hyperparameters_config.SHUFFLE_TEST) 
+    test_data = DataLoader(test_dataset, batch_size=hyperparameters_config.BATCH_SIZE, shuffle=hyperparameters_config.SHUFFLE_TEST)
     # ==
 
     # == Model choice ==
     model = None
-    if model_architecture_choice == config.MODEL_ARCHITECTURE_FCN:
+    if model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN:
         model = SimpleNN().to(device)
-    elif model_architecture_choice == config.MODEL_ARCHITECTURE_FCN_BN:
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN_BN:
         model = SimpleNN_BN().to(device)
-    elif model_architecture_choice == config.MODEL_ARCHITECTURE_CNN:
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN:
         model = SimpleCNN().to(device)
-    elif model_architecture_choice == config.MODEL_ARCHITECTURE_CNN_BN:
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN_BN:
         model = SimpleCNN_BN().to(device)
 
     if model is None:
@@ -70,10 +72,10 @@ def main():
 
     # == Core training - eval flow
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE)
+    optimizer = optim.Adam(model.parameters(), lr=hyperparameters_config.LEARNING_RATE)
 
-    print(f"\nStarting training for {config.EPOCHS} epochs with model {model_architecture_choice}...")
-    train_sprites(model, train_data, criterion, optimizer, device, config, config.EPOCHS)
+    print(f"\nStarting training for {hyperparameters_config.EPOCHS} epochs with model {model_architecture_choice}...")
+    train_sprites(model, train_data, criterion, optimizer, device, config, hyperparameters_config.EPOCHS)
     
     print("\nEvaluating on Validation Set...")
     overall_validation_accuracy, validation_directions_accuracies, validation_char_accuracies = evaluate_model(model, validation_data, device, config=None) 

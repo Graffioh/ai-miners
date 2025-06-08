@@ -1,7 +1,6 @@
 import os
 from datetime import datetime
 from pathlib import Path
-from torchvision import transforms
 
 class RunConfigManager:
     def __init__(self, base_dir="runs"):
@@ -46,28 +45,6 @@ class Config:
         self.PLOT_DIR = defaults.get('PLOT_DIR', "./plots")
 
         # ============================================================================
-        # TRAINING
-        # ============================================================================
-        self.MODEL_ARCHITECTURE_FCN = defaults.get('MODEL_ARCHITECTURE_FCN', "FCN")
-        self.MODEL_ARCHITECTURE_FCN_BN = defaults.get('MODEL_ARCHITECTURE_FCN_BN', "FCN with Batch Norm")
-        self.MODEL_ARCHITECTURE_CNN = defaults.get('MODEL_ARCHITECTURE_CNN', "CNN")
-        self.MODEL_ARCHITECTURE_CNN_BN = defaults.get('MODEL_ARCHITECTURE_CNN_BN', "CNN with Batch Norm")
-        self.LEARNING_RATE = defaults.get('LEARNING_RATE', 0.001)
-        self.BATCH_SIZE = defaults.get('BATCH_SIZE', 128)
-        self.EPOCHS = 5
-        self.VALIDATION_SPLIT_RATIO = 0.2
-
-        # ============================================================================
-        # DATA
-        # ============================================================================
-        self.SHUFFLE_TRAIN = defaults.get('SHUFFLE_TRAIN', True)
-        self.SHUFFLE_TEST = defaults.get('SHUFFLE_TEST', False)
-
-        # Starting Normalization values
-        self.NORMALIZE_MEAN = defaults.get('NORMALIZE_MEAN', [0.5, 0.5, 0.5, 0.5])
-        self.NORMALIZE_STD = defaults.get('NORMALIZE_STD', [0.5, 0.5, 0.5, 0.5])
-
-        # ============================================================================
         # EXTRA
         # ============================================================================
         self.SAVE_MODEL = defaults.get('SAVE_MODEL', True)
@@ -82,9 +59,3 @@ class Config:
 
     def get_test_path(self):
         return self.TEST_PATH
-
-    def get_transform(self):
-        return transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize(mean=self.NORMALIZE_MEAN, std=self.NORMALIZE_STD)
-        ])
