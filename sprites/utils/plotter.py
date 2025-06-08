@@ -47,7 +47,7 @@ class TrainingPlotter:
             plt.savefig(save_path, dpi=150, bbox_inches='tight')
             print(f"Loss plot saved to {save_path}")
 
-        plt.show()
+        # plt.show()
 
     def plot_accuracy(self, save_path=None):
         """Plot training accuracy over epochs"""
@@ -65,7 +65,7 @@ class TrainingPlotter:
             plt.savefig(save_path, dpi=150, bbox_inches='tight')
             print(f"Accuracy plot saved to {save_path}")
 
-        plt.show()
+        # plt.show()
 
     def plot_class_losses(self, save_path=None):
         """Plot loss per class (sprite direction)"""
@@ -94,7 +94,7 @@ class TrainingPlotter:
             plt.savefig(save_path, dpi=150, bbox_inches='tight')
             print(f"Class losses plot saved to {save_path}")
 
-        plt.show()
+        # plt.show()
 
     def plot_all(self, save_dir=None):
         """Plot all three charts"""
