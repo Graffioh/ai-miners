@@ -53,7 +53,7 @@ def perform_kfold_cross_validation(k_folds, full_train_dataset, test_dataset, mo
         
         # Train the model for this fold
         print(f"Training fold {fold + 1}...")
-        train_sprites(model, train_loader, criterion, optimizer, device, config, hyperparameters_config.EPOCHS)
+        train_sprites(model, train_loader, criterion, optimizer, device, config, hyperparameters_config.EPOCHS, plotter=None)
         
         # Evaluate on validation set for this fold
         print(f"Evaluating fold {fold + 1}...")

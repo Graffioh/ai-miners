@@ -51,7 +51,8 @@ def train_final_model(full_train_dataset, test_dataset, model_architecture_choic
     
     # Train final model
     print("Training final model on full training data...")
-    train_sprites(final_model, full_train_loader, criterion, optimizer, device, config, hyperparameters_config.EPOCHS)
+    plotter = TrainingPlotter()
+    train_sprites(final_model, full_train_loader, criterion, optimizer, device, config, hyperparameters_config.EPOCHS, plotter)
     
     # Evaluate on test set
     print("Evaluating final model on test set...")
@@ -68,23 +69,16 @@ def train_final_model(full_train_dataset, test_dataset, model_architecture_choic
     
     return final_model, test_accuracy, test_directions_acc, test_char_acc
 
-def train_sprites(model, data_loader, criterion, optimizer, device, config, epochs=5):
+def train_sprites(model, data_loader, criterion, optimizer, device, config, epochs=5, plotter=None):
     """
     Train the model with integrated plotting and saving via RunManager
     """
     model.train()
 
-    # Initialize plotter if plotting is enabled
-    plotter = TrainingPlotter() if config.ENABLE_PLOTTING else None
-
     for epoch in range(epochs):
         running_loss = 0.0
         correct = 0
         total = 0
-
-        # For tracking class losses during the epoch
-        epoch_class_outputs = []
-        epoch_class_targets = []
 
         for batch_idx, (_, img_data, target, _) in enumerate(data_loader):
             # Move data to device (GPU if available)
@@ -107,11 +101,6 @@ def train_sprites(model, data_loader, criterion, optimizer, device, config, epoc
             total += target.size(0)
             correct += (predicted == target).sum().item()
 
-            # Collect data for class loss calculation
-            if plotter:
-                epoch_class_outputs.append(output.detach())
-                epoch_class_targets.append(target.detach())
-
             # Print progress
             if batch_idx % 200 == 0:
                 print(f'Epoch {epoch+1}/{epochs}, Batch {batch_idx}/{len(data_loader)}, '
@@ -121,15 +110,9 @@ def train_sprites(model, data_loader, criterion, optimizer, device, config, epoc
         epoch_loss = running_loss / len(data_loader)
         epoch_acc = 100 * correct / total
 
-    # == Plot & Log ==
+        # Update plotter with epoch metrics
         if plotter:
-            # Update plot for each epoch
             plotter.update(epoch_loss, epoch_acc)
-
-            if epoch_class_outputs:
-                all_outputs = torch.cat(epoch_class_outputs, dim=0)
-                all_targets = torch.cat(epoch_class_targets, dim=0)
-                plotter.update_class_losses(all_outputs, all_targets, criterion)
 
         print(f'Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}%')
 
@@ -141,10 +124,6 @@ def train_sprites(model, data_loader, criterion, optimizer, device, config, epoc
     # Generate and save plots at the end of training
     if plotter:
         print("\nGenerating training plots...")
-
         plotter.plot_loss(config.manager.get_plot_path("training_loss"))
         plotter.plot_accuracy(config.manager.get_plot_path("training_accuracy"))
-        plotter.plot_class_losses(config.manager.get_plot_path("class_losses"))
-
         print(f"✅ Plots saved to: {config.manager.plots_dir}")
-    # ==
