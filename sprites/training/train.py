@@ -1,5 +1,72 @@
 import torch
 from utils.plotter import TrainingPlotter
+import torch.nn as nn
+from torch.utils.data import DataLoader
+import torch.optim as optim
+
+from models.simpleCNN import SimpleCNN
+from models.simpleCNN_BN import SimpleCNN_BN
+from models.simpleNN import SimpleNN
+from models.simpleNN_BN import SimpleNN_BN
+
+from evaluation.evaluation_orchestrator import evaluate_model
+
+def create_model(model_architecture_choice, hyperparameters_config, device):
+    """Factory function to create a new model instance"""
+    model = None
+    if model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN:
+        model = SimpleNN().to(device)
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN_BN:
+        model = SimpleNN_BN().to(device)
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN:
+        model = SimpleCNN().to(device)
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN_BN:
+        model = SimpleCNN_BN().to(device)
+    
+    if model is None:
+        raise ValueError(f"Model architecture '{model_architecture_choice}' not recognized")
+    
+    return model
+
+def train_final_model(full_train_dataset, test_dataset, model_architecture_choice, 
+                                   hyperparameters_config, config, device):
+    """Train final model on full training data and evaluate on test set"""
+    print("\n=== Training Final Model on Full Training Data ===")
+    
+    # Create data loader for full training data
+    full_train_loader = DataLoader(full_train_dataset, 
+                                 batch_size=hyperparameters_config.BATCH_SIZE, 
+                                 shuffle=hyperparameters_config.SHUFFLE_TRAIN)
+    
+    test_loader = DataLoader(test_dataset, 
+                           batch_size=hyperparameters_config.BATCH_SIZE, 
+                           shuffle=hyperparameters_config.SHUFFLE_TEST)
+    
+    # Create final model
+    final_model = create_model(model_architecture_choice, hyperparameters_config, device)
+    
+    # Create optimizer and criterion
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.Adam(final_model.parameters(), lr=hyperparameters_config.LEARNING_RATE)
+    
+    # Train final model
+    print("Training final model on full training data...")
+    train_sprites(final_model, full_train_loader, criterion, optimizer, device, config, hyperparameters_config.EPOCHS)
+    
+    # Evaluate on test set
+    print("Evaluating final model on test set...")
+    test_accuracy, test_directions_acc, test_char_acc = evaluate_model(final_model, test_loader, device, config)
+    
+    # Save final model
+    if config.SAVE_MODEL:
+        final_model_path = config.manager.get_model_path(f"final_model_{model_architecture_choice}")
+        try:
+            torch.save(final_model.state_dict(), final_model_path)
+            print(f"Final model saved to: {final_model_path}")
+        except Exception as e:
+            print(f"❌ Error saving final model: {e}")
+    
+    return final_model, test_accuracy, test_directions_acc, test_char_acc
 
 def train_sprites(model, data_loader, criterion, optimizer, device, config, epochs=5):
     """

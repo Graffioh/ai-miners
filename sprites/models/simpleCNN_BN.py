@@ -22,7 +22,7 @@ class SimpleCNN_BN(nn.Module):
 
         self.pool = nn.MaxPool2d(2, 2)
         self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(0.5)
+        self.dropout = nn.Dropout(0.3)
 
         # Calculate flattened size after convolutions
         # 128x128 → 64x64 → 32x32 → 16x16 → 8x8

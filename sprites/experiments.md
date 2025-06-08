@@ -1,6 +1,6 @@
 # Experiments
 
-## Accuracy (validation)
+## Accuracy (K-Fold validation)
 
 ### FCN
 
@@ -11,11 +11,11 @@
 ### CNN
 
 - Normal: 
-- with Batch Norm everywhere (dropout 0.5): 27%
+- with Batch Norm everywhere (dropout 0.5): Mean Validation Accuracy 64.25% ± 18.90%
 - with Batch Norm everywhere (dropout 0.3): 
 - with Batch Norm not in the FCN classification part: 
-- less aggressive polling: 
-- without polling: 
+- less aggressive pooling: 
+- without pooling: 
 
 ## Logging
 
@@ -23,5 +23,4 @@
 
 ## TODO
 
-- cross validation <-
 - mini batch stratified sampling
