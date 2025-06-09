@@ -3,8 +3,8 @@ import torch
 from dataset.dataset import SpriteDataset
 from training.train import train_final_model
 from utils.util import pick_model_architecture_menu, log_hyperparameters_config
-from config import Config
-from hyperparameters import HyperparametersConfig
+from configurations.config import Config
+from configurations.hyperparameters import HyperparametersConfig
 from evaluation.k_fold_cv import *
 
 torch.manual_seed(42)
