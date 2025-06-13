@@ -18,7 +18,6 @@ class HyperparametersConfig:
         self.LEARNING_RATE = defaults.get('LEARNING_RATE', 0.001)
         self.BATCH_SIZE = defaults.get('BATCH_SIZE', 128)
         self.EPOCHS = 5
-        self.VALIDATION_SPLIT_RATIO = 0.2
         self.K_FOLD = 5
 
         # ============================================================================

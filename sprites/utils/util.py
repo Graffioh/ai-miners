@@ -91,7 +91,6 @@ def log_hyperparameters_config(config, config_manager, device, model_arch):
         f.write(f"LEARNING_RATE: {config.LEARNING_RATE}\n")
         f.write(f"BATCH_SIZE: {config.BATCH_SIZE}\n")
         f.write(f"EPOCHS: {config.EPOCHS}\n")
-        f.write(f"VALIDATION_SPLIT_RATIO: {config.VALIDATION_SPLIT_RATIO}\n\n")
         
         f.write("DATA:\n")
         f.write(f"SHUFFLE_TRAIN: {config.SHUFFLE_TRAIN}\n")

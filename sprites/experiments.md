@@ -4,7 +4,7 @@
 
 ### FCN
 
-- **Normal**
+- **Normal** (random, shit)
     - dropout 0.3
     - LEARNING_RATE: 0.001
     - BATCH_SIZE: 128
@@ -13,7 +13,7 @@
     - Min Validation Accuracy: 12.28%
     - Max Validation Accuracy: 12.54%
     - Individual Fold Accuracies: ['12.54%', '12.35%', '12.39%', '12.32%', '12.28%']
-    - **EXTRA**: 1 direction with 100% whereas others are 0%, randomly, example: 
+    - EXTRA: 1 direction with 100% whereas others are 0%, randomly, example: 
         *Fold 4*
         Training samples: 87552
         Validation samples: 21888
@@ -29,7 +29,7 @@
             - West: 0.00%
     - Test Accuracy: 12.40%
 
-- **FCN with Batch Norm** 
+- **FCN with Batch Norm** (poor generalization)
     - dropout 0.5 
     - LEARNING_RATE: 0.001
     - BATCH_SIZE: 128
@@ -40,7 +40,7 @@
     - Individual Fold Accuracies: ['36.47%', '38.41%', '59.88%', '19.65%', '25.17%']
     - Test Accuracy: 61.00%
 
-- **FCN with Batch Norm** 
+- **FCN with Batch Norm** (good generalization but poor performances)
     - dropout 0.3
     - LEARNING_RATE: 0.001
     - BATCH_SIZE: 128
@@ -54,7 +54,7 @@
 
 ### CNN
 
-- **Normal** 
+- **Normal** (good but overfitting validation)
     - dropout 0.3
     - LEARNING_RATE: 0.001
     - BATCH_SIZE: 128
@@ -65,7 +65,7 @@
     - Individual Fold Accuracies: ['90.29%', '90.52%', '90.57%', '90.44%', '90.45%']
     - Test Accuracy: 78.46%
 
-- **with Batch Norm everywhere** 
+- **with Batch Norm everywhere** (shit)
     - dropout 0.5
     - LEARNING_RATE: 0.001
     - BATCH_SIZE: 128
@@ -76,7 +76,7 @@
     - Individual Fold Accuracies: ['75.44%', '75.99%', '86.55%', '42.52%', '40.72%']
     - Test Accuracy: 44.26%
 
-- **with Batch Norm everywhere** 
+- **with Batch Norm everywhere** (more shit)
     - dropout 0.3
     - LEARNING_RATE: 0.001
     - BATCH_SIZE: 128
@@ -93,6 +93,12 @@
 
 - **without pooling**
 
+
+#### Overall conclusions (thanks claudio)
+
+CNN with batch norm 0.3
+
+Variance in folds (especially in BN models) suggests that model performance is sensitive to data splits, which could merit further investigation or more robust cross-validation.
 
 ### ResNet
 
