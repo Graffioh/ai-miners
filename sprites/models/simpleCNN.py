@@ -13,14 +13,13 @@ class SimpleCNN(nn.Module):
         self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
         self.conv4 = nn.Conv2d(128, 256, kernel_size=3, padding=1)
 
-        # Pooling and activation
-        self.pool = nn.MaxPool2d(2, 2)
+        # Pooling and activation - ResNet style
+        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
+        self.adaptive_pool = nn.AdaptiveAvgPool2d((2, 2))  
         self.relu = nn.ReLU()
-        self.dropout = nn.Dropout(0.5)
+        self.dropout = nn.Dropout(0.3)
 
-        # Calculate flattened size after convolutions
-        # 128x128 → 64x64 → 32x32 → 16x16 → 8x8
-        self.flattened_size = 256 * 8 * 8  # 16,384 (much smaller!)
+        self.flattened_size = 256 * 2 * 2  
         self.flatten = nn.Flatten()
 
         # Classifier layers
@@ -30,13 +29,16 @@ class SimpleCNN(nn.Module):
 
     def forward(self, x):
         # Feature extraction
-        x = self.pool(self.relu(self.conv1(x)))  # 128→64
-        x = self.pool(self.relu(self.conv2(x)))  # 64→32
-        x = self.pool(self.relu(self.conv3(x)))  # 32→16
-        x = self.pool(self.relu(self.conv4(x)))  # 16→8
+        x = self.maxpool(self.relu(self.conv1(x)))  # 128→64
+        x = self.maxpool(self.relu(self.conv2(x)))  # 64→32
+        x = self.maxpool(self.relu(self.conv3(x)))  # 32→16
+        x = self.maxpool(self.relu(self.conv4(x)))  # 16→8
+
+        # Adaptive pooling to 2×2 (preserves some spatial info)
+        x = self.adaptive_pool(x)  
 
         # Flatten for classifier
-        x = self.flatten(x)
+        x = self.flatten(x)  
 
         # Classification
         x = self.relu(self.fc1(x))

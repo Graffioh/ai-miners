@@ -2,6 +2,8 @@
 
 ## Accuracy (K-Fold validation)
 
+K = 5
+
 ### FCN
 
 - **Normal** (random, shit)
@@ -55,7 +57,8 @@
 ### CNN
 
 - **Normal** (good but overfitting validation)
-    - dropout 0.3
+    - MaxPool2d(2,2)
+    - dropout 0.5
     - LEARNING_RATE: 0.001
     - BATCH_SIZE: 128
     - EPOCHS: 5
@@ -65,7 +68,44 @@
     - Individual Fold Accuracies: ['90.29%', '90.52%', '90.57%', '90.44%', '90.45%']
     - Test Accuracy: 78.46%
 
+- **Normal** (a bit better but still overfitting)
+    - MaxPool2d(2,2)
+    - dropout 0.3
+    - LEARNING_RATE: 0.001
+    - BATCH_SIZE: 128
+    - EPOCHS: 5
+    - Mean Validation Accuracy: 91.69% ± 0.15%
+    - Min Validation Accuracy: 91.45%
+    - Max Validation Accuracy: 91.89%
+    - Individual Fold Accuracies: ['91.45%', '91.64%', '91.89%', '91.73%', '91.76%']
+    - Test Accuracy: 79.73%
+
+- **Normal** (bad)
+    - MaxPool2d(3,3) with AdaptiveAvgPool2d(4,4)
+    - dropout 0.3
+    - LEARNING_RATE: 0.001
+    - BATCH_SIZE: 128
+    - EPOCHS: 5
+    - Mean Validation Accuracy: 83.35% ± 1.06%
+    - Min Validation Accuracy: 81.65%
+    - Max Validation Accuracy: 84.67%
+    - Individual Fold Accuracies: ['81.65%', '84.11%', '82.77%', '83.54%', '84.67%']
+    - Test Accuracy: 68.16%
+
+- **Normal** (more balanced than the others)
+    - MaxPool2d(3,2,1) with AdaptiveAvgPool2d(2,2)
+    - dropout 0.3
+    - LEARNING_RATE: 0.001
+    - BATCH_SIZE: 128
+    - EPOCHS: 5
+    - Mean Validation Accuracy: 84.30% ± 0.54%
+    - Min Validation Accuracy: 83.50%
+    - Max Validation Accuracy: 84.93%
+    - Individual Fold Accuracies: ['83.92%', '84.81%', '84.93%', '84.32%', '83.50%']
+    - Test Accuracy: 71.76%
+
 - **with Batch Norm everywhere** (shit)
+    - MaxPool2d(2,2)
     - dropout 0.5
     - LEARNING_RATE: 0.001
     - BATCH_SIZE: 128
@@ -77,6 +117,7 @@
     - Test Accuracy: 44.26%
 
 - **with Batch Norm everywhere** (more shit)
+    - MaxPool2d(2,2)
     - dropout 0.3
     - LEARNING_RATE: 0.001
     - BATCH_SIZE: 128
