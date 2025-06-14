@@ -1,5 +1,11 @@
 from torch.utils.data import Subset 
 
+from models.simpleCNN import SimpleCNN
+from models.simpleCNN_BN import SimpleCNN_BN
+from models.simpleNN import SimpleNN
+from models.simpleNN_BN import SimpleNN_BN
+from models.improvedCNN import ImprovedCNN
+
 def pick_model_architecture_menu(config):
     print("+---------------------------------------+")
     print("\nModel architectures available:")
@@ -7,6 +13,7 @@ def pick_model_architecture_menu(config):
     print(f"2. {config.MODEL_ARCHITECTURE_FCN_BN} (SimpleNN_BN)") 
     print(f"3. {config.MODEL_ARCHITECTURE_CNN} (SimpleCNN)")
     print(f"4. {config.MODEL_ARCHITECTURE_CNN_BN} (SimpleCNN_BN)") 
+    print(f"5. {config.MODEL_ARCHITECTURE_IMPROVED_CNN} (ImprovedCNN)") 
     choice = input("Select: ").strip()
     if choice == "1":
         return config.MODEL_ARCHITECTURE_FCN
@@ -16,9 +23,30 @@ def pick_model_architecture_menu(config):
         return config.MODEL_ARCHITECTURE_CNN
     elif choice == "4":
         return config.MODEL_ARCHITECTURE_CNN_BN 
+    elif choice == "5":
+        return config.MODEL_ARCHITECTURE_IMPROVED_CNN
     else:
         print(f"Invalid choice, defaulting to {config.MODEL_ARCHITECTURE_CNN}")
         return config.MODEL_ARCHITECTURE_CNN
+
+def create_model(model_architecture_choice, hyperparameters_config, device):
+    """Factory function to create a new model instance"""
+    model = None
+    if model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN:
+        model = SimpleNN().to(device)
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN_BN:
+        model = SimpleNN_BN().to(device)
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN:
+        model = SimpleCNN().to(device)
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN_BN:
+        model = SimpleCNN_BN().to(device)
+    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_IMPROVED_CNN:
+        model = ImprovedCNN().to(device)
+    
+    if model is None:
+        raise ValueError(f"Model architecture '{model_architecture_choice}' not recognized")
+    
+    return model
 
 def print_dataset(dataset):
     """Print the dataset to verify that loading works correctly"""

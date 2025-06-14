@@ -15,6 +15,7 @@ class HyperparametersConfig:
         self.MODEL_ARCHITECTURE_FCN_BN = defaults.get('MODEL_ARCHITECTURE_FCN_BN', "FCN with Batch Norm")
         self.MODEL_ARCHITECTURE_CNN = defaults.get('MODEL_ARCHITECTURE_CNN', "CNN")
         self.MODEL_ARCHITECTURE_CNN_BN = defaults.get('MODEL_ARCHITECTURE_CNN_BN', "CNN with Batch Norm")
+        self.MODEL_ARCHITECTURE_IMPROVED_CNN = defaults.get('MODEL_ARCHITECTURE_IMPROVED_CNN', "CNN with some ResNet influence")
         self.LEARNING_RATE = defaults.get('LEARNING_RATE', 0.001)
         self.BATCH_SIZE = defaults.get('BATCH_SIZE', 128)
         self.EPOCHS = 5

@@ -2,9 +2,11 @@ from sklearn.model_selection import KFold
 from torch.utils.data import DataLoader, Subset
 import numpy as np
 import torch.nn as nn
-from training.train import create_model, train_sprites
+from training.train import train_sprites
 from evaluation.evaluation_orchestrator import evaluate_model
 import torch.optim as optim
+from utils.util import create_model
+
 
 def perform_kfold_cross_validation(k_folds, full_train_dataset, test_dataset, model_architecture_choice, 
                                    hyperparameters_config, config, device):
@@ -50,6 +52,7 @@ def perform_kfold_cross_validation(k_folds, full_train_dataset, test_dataset, mo
         # Create optimizer and criterion
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=hyperparameters_config.LEARNING_RATE)
+        #optimizer = optim.AdamW(model.parameters(), lr=0.001, weight_decay=1e-4)
         
         # Train the model for this fold
         print(f"Training fold {fold + 1}...")

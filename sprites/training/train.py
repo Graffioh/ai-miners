@@ -4,29 +4,8 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 import torch.optim as optim
 
-from models.simpleCNN import SimpleCNN
-from models.simpleCNN_BN import SimpleCNN_BN
-from models.simpleNN import SimpleNN
-from models.simpleNN_BN import SimpleNN_BN
-
 from evaluation.evaluation_orchestrator import evaluate_model
-
-def create_model(model_architecture_choice, hyperparameters_config, device):
-    """Factory function to create a new model instance"""
-    model = None
-    if model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN:
-        model = SimpleNN().to(device)
-    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN_BN:
-        model = SimpleNN_BN().to(device)
-    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN:
-        model = SimpleCNN().to(device)
-    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN_BN:
-        model = SimpleCNN_BN().to(device)
-    
-    if model is None:
-        raise ValueError(f"Model architecture '{model_architecture_choice}' not recognized")
-    
-    return model
+from utils.util import create_model
 
 def train_final_model(full_train_dataset, test_dataset, model_architecture_choice, 
                                    hyperparameters_config, config, device):
@@ -48,6 +27,7 @@ def train_final_model(full_train_dataset, test_dataset, model_architecture_choic
     # Create optimizer and criterion
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(final_model.parameters(), lr=hyperparameters_config.LEARNING_RATE)
+    #optimizer = optim.AdamW(final_model.parameters(), lr=0.001, weight_decay=1e-4)
     
     # Train final model
     print("Training final model on full training data...")
