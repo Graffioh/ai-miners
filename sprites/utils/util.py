@@ -1,53 +1,5 @@
 from torch.utils.data import Subset 
 
-from models.simpleCNN import SimpleCNN
-from models.simpleCNN_BN import SimpleCNN_BN
-from models.simpleNN import SimpleNN
-from models.simpleNN_BN import SimpleNN_BN
-from models.improvedCNN import ImprovedCNN
-
-def pick_model_architecture_menu(config):
-    print("+---------------------------------------+")
-    print("\nModel architectures available:")
-    print(f"1. {config.MODEL_ARCHITECTURE_FCN} (SimpleNN)")
-    print(f"2. {config.MODEL_ARCHITECTURE_FCN_BN} (SimpleNN_BN)") 
-    print(f"3. {config.MODEL_ARCHITECTURE_CNN} (SimpleCNN)")
-    print(f"4. {config.MODEL_ARCHITECTURE_CNN_BN} (SimpleCNN_BN)") 
-    print(f"5. {config.MODEL_ARCHITECTURE_IMPROVED_CNN} (ImprovedCNN)") 
-    choice = input("Select: ").strip()
-    if choice == "1":
-        return config.MODEL_ARCHITECTURE_FCN
-    elif choice == "2":
-        return config.MODEL_ARCHITECTURE_FCN_BN 
-    elif choice == "3":
-        return config.MODEL_ARCHITECTURE_CNN
-    elif choice == "4":
-        return config.MODEL_ARCHITECTURE_CNN_BN 
-    elif choice == "5":
-        return config.MODEL_ARCHITECTURE_IMPROVED_CNN
-    else:
-        print(f"Invalid choice, defaulting to {config.MODEL_ARCHITECTURE_CNN}")
-        return config.MODEL_ARCHITECTURE_CNN
-
-def create_model(model_architecture_choice, hyperparameters_config, device):
-    """Factory function to create a new model instance"""
-    model = None
-    if model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN:
-        model = SimpleNN().to(device)
-    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_FCN_BN:
-        model = SimpleNN_BN().to(device)
-    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN:
-        model = SimpleCNN().to(device)
-    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_CNN_BN:
-        model = SimpleCNN_BN().to(device)
-    elif model_architecture_choice == hyperparameters_config.MODEL_ARCHITECTURE_IMPROVED_CNN:
-        model = ImprovedCNN().to(device)
-    
-    if model is None:
-        raise ValueError(f"Model architecture '{model_architecture_choice}' not recognized")
-    
-    return model
-
 def print_dataset(dataset):
     """Print the dataset to verify that loading works correctly"""
 
@@ -108,13 +60,11 @@ def print_dataset(dataset):
         import traceback
         traceback.print_exc()
     
-def log_hyperparameters_config(config, config_manager, device, model_arch):
+def log_hyperparameters_config(config, config_manager, device):
     with open(config_manager.get_log_path("hyperparameters"), "w") as f:
         f.write(f"Run ID: {config_manager.run_id}\n")
         f.write(f"Device: {device}\n\n")
 
-        f.write(f"MODEL ARCHITECTURE: {model_arch}\n\n")
-        
         f.write("TRAINING:\n")
         f.write(f"LEARNING_RATE: {config.LEARNING_RATE}\n")
         f.write(f"BATCH_SIZE: {config.BATCH_SIZE}\n")
@@ -125,3 +75,26 @@ def log_hyperparameters_config(config, config_manager, device, model_arch):
         f.write(f"SHUFFLE_TEST: {config.SHUFFLE_TEST}\n")
         f.write(f"NORMALIZE_MEAN: {config.NORMALIZE_MEAN}\n")
         f.write(f"NORMALIZE_STD: {config.NORMALIZE_STD}\n\n")
+
+def print_final_results(test_accuracy, test_directions_acc, test_char_acc):
+    # Print final test results
+    print("\n" + "=" * 50)
+    print("FINAL MODEL TEST RESULTS")
+    print("=" * 50)
+    print(f"Test Accuracy: {test_accuracy:.2f}%")
+    
+    if test_directions_acc:
+        print("Test Accuracies per Direction:")
+        for direction, data in sorted(test_directions_acc.items()):
+            if isinstance(data, dict) and 'accuracy' in data:
+                print(f"  - {direction}: {data['accuracy']:.2f}%")
+            else:
+                print(f"  - {direction}: {data:.2f}%")
+    
+    if test_char_acc:
+        print("Test Accuracies per Character:")
+        for char, data in test_char_acc.items():
+            if isinstance(data, dict) and 'accuracy' in data:
+                print(f"  - '{char}': {data['accuracy']:.2f}%")
+            else:
+                print(f"  - '{char}': {data:.2f}%")

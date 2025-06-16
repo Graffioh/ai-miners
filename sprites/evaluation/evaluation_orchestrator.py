@@ -40,3 +40,21 @@ def evaluate_model(model, test_loader, device, config=None, print_results=True):
         )
     
     return overall_accuracy, per_direction_dict, per_character_dict
+
+    # Set number of folds for cross validation
+#    k_folds = hyperparameters_config.K_FOLD
+#    
+#    # Perform K-fold cross validation
+#    fold_results = perform_kfold_cross_validation(
+#        k_folds=k_folds,
+#        full_train_dataset=full_train_dataset,
+#        test_dataset=test_dataset,
+#        model_architecture_choice=model_architecture_choice,
+#        hyperparameters_config=hyperparameters_config,
+#        config=config,
+#        device=device
+#    )
+#    
+#    # Print and save K-fold results
+#    print_kfold_summary(fold_results)
+#    save_kfold_results(fold_results, config)

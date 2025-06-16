@@ -151,7 +151,6 @@
 - Individual Fold Accuracies: ['80.56%', '70.69%', '73.66%', '52.32%', '70.56%']
 - Test Accuracy: 64.10%
 
-
 ### ResNet
 
 ...
@@ -162,6 +161,24 @@
 
 ## TODO
 
-- improve plotting
-- stratified kfold validation
-- purged kfold validation
+### Furlanello meeting 1 
+
+- [] arrivare a 86% tramite CNN base
+- [] improve plotting
+- [] confusion matrix
+- [] separare accuracy per direzione e per sprite
+- [] se sprite accuracy bassa, fare confusion matrix per quelle sprite (analisi approfondita)
+- [] testare più volte su template diversi per esperimenti
+- [V] togliere k fold 
+- [] gestire in 3 canali non 4 con trasparenza
+- [] downsamplare di meno
+
+- differenza tra modello trainato tra 5 e 10 epoch
+- se traino modello piu volte, cambia la confusion matrix?
+- data augmentation (cambiare colore sfondi, traslare rispetto allo sfondo l'immagine per la pos) / capire trasparenza
+- weight decay da adam = dropout inutile (?)
+
+- vedere codici di torch vision
+- https://d2l.ai/chapter_computer-vision/fcn.html
+
+

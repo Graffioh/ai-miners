@@ -5,7 +5,7 @@ import torch.nn as nn
 from training.train import train_sprites
 from evaluation.evaluation_orchestrator import evaluate_model
 import torch.optim as optim
-from utils.util import create_model
+from models.spritesCNN import SpritesCNN
 
 
 def perform_kfold_cross_validation(k_folds, full_train_dataset, test_dataset, model_architecture_choice, 
@@ -47,7 +47,7 @@ def perform_kfold_cross_validation(k_folds, full_train_dataset, test_dataset, mo
                               shuffle=False)
         
         # Create a fresh model for this fold
-        model = create_model(model_architecture_choice, hyperparameters_config, device)
+        model = SpritesCNN().to(device)
         
         # Create optimizer and criterion
         criterion = nn.CrossEntropyLoss()

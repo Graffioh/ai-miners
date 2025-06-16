@@ -26,17 +26,17 @@ class SimpleCNN_BN(nn.Module):
 
         # Calculate flattened size after convolutions
         # 128x128 → 64x64 → 32x32 → 16x16 → 8x8
-        self.flattened_size = 256 * 8 * 8  # 16,384 (much smaller!)
-        self.flatten = nn.Flatten()
+       # self.flattened_size = 256 * 8 * 8  # 16,384 (much smaller!)
+       # self.flatten = nn.Flatten()
 
-        # Classifier layers with BatchNorm
-        self.fc1 = nn.Linear(self.flattened_size, 512)
-        #self.bn_fc1 = nn.BatchNorm1d(512)
-        
-        self.fc2 = nn.Linear(512, 128)
-        #self.bn_fc2 = nn.BatchNorm1d(128)
-        
-        self.fc3 = nn.Linear(128, num_classes)
+       # # Classifier layers with BatchNorm
+       # self.fc1 = nn.Linear(self.flattened_size, 512)
+       # #self.bn_fc1 = nn.BatchNorm1d(512)
+       # 
+       # self.fc2 = nn.Linear(512, 128)
+       # #self.bn_fc2 = nn.BatchNorm1d(128)
+       # 
+       # self.fc3 = nn.Linear(128, num_classes)
 
     def forward(self, x):
         # Feature extraction 
@@ -45,14 +45,19 @@ class SimpleCNN_BN(nn.Module):
         x = self.pool(self.relu(self.bn3(self.conv3(x))))  # 32→16
         x = self.pool(self.relu(self.bn4(self.conv4(x))))  # 16→8
 
-        # Flatten for classifier
-        x = self.flatten(x)
 
-        # Classification with BatchNorm
-        x = self.relu(self.fc1(x))
-        x = self.dropout(x)
-        x = self.relu(self.fc2(x))
-        x = self.dropout(x)
-        x = self.fc3(x)
+        # average pool con layer finale
+
+        self.fc3 = nn.Linear(128, num_classes)
+
+        # Flatten for classifier
+       # x = self.flatten(x)
+
+       # # Classification with BatchNorm
+       # x = self.relu(self.fc1(x))
+       # x = self.dropout(x)
+       # x = self.relu(self.fc2(x))
+       # x = self.dropout(x)
+       # x = self.fc3(x)
 
         return x
