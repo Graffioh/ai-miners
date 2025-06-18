@@ -12,7 +12,7 @@ from evaluation.k_fold_cv import *
 from evaluation.evaluation_orchestrator import evaluate_model
 from models.spritesCNN import SpritesCNN
 
-torch.manual_seed(42)
+#torch.manual_seed(42)
 
 def get_device():
     if torch.backends.mps.is_available():
@@ -40,8 +40,9 @@ def train_and_evaluate_model(full_train_dataset, test_dataset, model,
     
     # Create optimizer and criterion
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.AdamW(model.parameters(), lr=hyperparameters_config.LEARNING_RATE, 
-                            weight_decay=hyperparameters_config.WEIGHT_DECAY)
+
+    optimizer = optim.AdamW(model.parameters(), lr=hyperparameters_config.LEARNING_RATE, weight_decay=hyperparameters_config.WEIGHT_DECAY)
+    #optimizer = optim.Adam(model.parameters(), lr=hyperparameters_config.LEARNING_RATE)
     
     # Train model
     print("Training final model on full training data...")

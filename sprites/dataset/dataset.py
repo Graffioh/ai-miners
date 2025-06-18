@@ -1,7 +1,7 @@
-import torch
 import numpy as np
 from torch.utils.data import Dataset
 from PIL import Image
+from torchvision import transforms
 import os
 
 # sprite obj
@@ -31,12 +31,14 @@ class SpriteDataset(Dataset):
     def __getitem__(self, idx):
         sprite_obj = self.flattened_data[idx]
         sprite_img = sprite_obj.image
-
+        
+        # Apply transforms or convert to tensor
         if self.transform:
             sprite_img = self.transform(sprite_img)
-        elif isinstance(sprite_img, np.ndarray):
-            sprite_img = torch.from_numpy(sprite_img).float()
-
+        else:
+            # Convert to tensor if no transforms
+            sprite_img = transforms.ToTensor()(sprite_img)
+        
         return sprite_obj.character, sprite_img, sprite_obj.direction, sprite_obj.action
 
     def split_sprite_sheet(self, dataset_dir):
@@ -74,6 +76,9 @@ class SpriteDataset(Dataset):
                         bottom = top + self.sprite_height
 
                         sprite_img = sprite_sheet.crop((left, top, right, bottom))
+                        if sprite_img.mode == 'RGBA':
+                            sprite_img = sprite_img.convert('RGB')
+
                         sprite_array = np.array(sprite_img)
 
                         # Create sprite object

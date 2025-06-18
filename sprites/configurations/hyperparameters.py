@@ -12,10 +12,9 @@ class HyperparametersConfig:
         # TRAINING
         # ============================================================================
         self.LEARNING_RATE = defaults.get('LEARNING_RATE', 0.001)
-        self.WEIGHT_DECAY = defaults.get('LEARNING_RATE', 0.0001)
+        self.WEIGHT_DECAY = defaults.get('WEIGHT_DECAY', 0.00025)
         self.BATCH_SIZE = defaults.get('BATCH_SIZE', 128)
         self.EPOCHS = 10
-        #self.K_FOLD = 5
 
         # ============================================================================
         # DATA
@@ -24,8 +23,8 @@ class HyperparametersConfig:
         self.SHUFFLE_TEST = defaults.get('SHUFFLE_TEST', False)
 
         # Starting Normalization values
-        self.NORMALIZE_MEAN = defaults.get('NORMALIZE_MEAN', [0.5, 0.5, 0.5, 0.5])
-        self.NORMALIZE_STD = defaults.get('NORMALIZE_STD', [0.5, 0.5, 0.5, 0.5])
+        self.NORMALIZE_MEAN = defaults.get('NORMALIZE_MEAN', [0.5, 0.5, 0.5])
+        self.NORMALIZE_STD = defaults.get('NORMALIZE_STD', [0.5, 0.5, 0.5])
 
     def get_transform(self):
         return transforms.Compose([

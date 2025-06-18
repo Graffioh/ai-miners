@@ -168,9 +168,9 @@
 - [] confusion matrix
 - [] separare accuracy per direzione e per sprite
 - [] se sprite accuracy bassa, fare confusion matrix per quelle sprite (analisi approfondita)
-- [] testare più volte su template diversi per esperimenti
+- [] testare più volte su template diversi per esperimenti (purged k fold)
 - [V] togliere k fold 
-- [] gestire in 3 canali non 4 con trasparenza
+- [V] gestire in 3 canali non 4 con trasparenza
 - [] downsamplare di meno
 
 - differenza tra modello trainato tra 5 e 10 epoch
