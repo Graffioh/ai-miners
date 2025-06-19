@@ -16,6 +16,7 @@ from models.spritesCNN import SpritesCNN
 
 def get_device():
     if torch.backends.mps.is_available():
+        torch.mps.empty_cache()
         return torch.device("mps")
     elif torch.cuda.is_available():
         return torch.device("cuda")
@@ -51,7 +52,7 @@ def train_and_evaluate_model(full_train_dataset, test_dataset, model,
     
     # Evaluate on test set
     print("Evaluating final model on test set...")
-    test_accuracy, test_directions_acc, test_char_acc = evaluate_model(model, test_loader, device, config)
+    test_accuracy, test_directions_acc, test_char_acc = evaluate_model(model, test_loader, criterion, device, config)
     
     # Save model
     if config.SAVE_MODEL:

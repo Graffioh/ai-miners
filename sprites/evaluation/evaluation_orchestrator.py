@@ -2,7 +2,7 @@ from evaluation.test import test_model
 from evaluation.evaluation_metrics import EvaluationMetrics
 from evaluation.evaluation_reporter import EvaluationReporter
 
-def evaluate_model(model, test_loader, device, config=None, print_results=True):
+def evaluate_model(model, test_loader, criterion, device, config=None, print_results=True):
     """
     High-level function to evaluate model and optionally save results.
     
@@ -17,7 +17,7 @@ def evaluate_model(model, test_loader, device, config=None, print_results=True):
         tuple: (overall_accuracy, per_direction_dict, per_character_dict)
     """
     # Run the test loop
-    predictions, targets, characters = test_model(model, test_loader, device)
+    predictions, targets, characters = test_model(model, test_loader, criterion, device)
     
     # Calculate metrics
     metrics_calculator = EvaluationMetrics()

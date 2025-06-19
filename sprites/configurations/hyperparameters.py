@@ -14,7 +14,7 @@ class HyperparametersConfig:
         self.LEARNING_RATE = defaults.get('LEARNING_RATE', 0.001)
         self.WEIGHT_DECAY = defaults.get('WEIGHT_DECAY', 0.00025)
         self.BATCH_SIZE = defaults.get('BATCH_SIZE', 128)
-        self.EPOCHS = 10
+        self.EPOCHS = 1
 
         # ============================================================================
         # DATA

@@ -1,27 +1,36 @@
 import torch
 
-def test_model(model, test_loader, device):
+def test_model(model, test_loader, criterion, device, plotter=None):
     """
-    Run the test loop and collect predictions and targets.
-    Returns raw data for further processing.
+    Evaluate the model on test data for each epoch
     """
     model.eval()
     
-    all_predictions = []
-    all_targets = []
-    all_characters = []
+    running_loss = 0.0
+    correct = 0
+    total = 0
     
     with torch.no_grad():
-        for char_batch, img_data, target_direction_batch, _ in test_loader:
-            img_data = img_data.to(device)
-            target_direction_batch = target_direction_batch.to(device)
+        for _, img_data, target, _ in test_loader:
+            # Move data to device
+            img_data, target = img_data.to(device), target.to(device)
             
+            # Forward pass
             output = model(img_data)
-            _, predicted_direction_batch = torch.max(output, 1)
+            loss = criterion(output, target)
             
-            # Collect results
-            all_predictions.extend(predicted_direction_batch.cpu().numpy())
-            all_targets.extend(target_direction_batch.cpu().numpy())
-            all_characters.extend(char_batch)
+            # Statistics
+            running_loss += loss.item()
+            _, predicted = torch.max(output.data, 1)
+            total += target.size(0)
+            correct += (predicted == target).sum().item()
     
-    return all_predictions, all_targets, all_characters
+    # Calculate test metrics
+    test_loss = running_loss / len(test_loader)
+    test_acc = 100 * correct / total
+    
+    # Update plotter with test metrics
+    if plotter:
+        plotter.update_test(test_loss, test_acc)
+    
+    return test_loss, test_acc
