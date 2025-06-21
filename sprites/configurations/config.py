@@ -1,61 +1,26 @@
-import os
-from datetime import datetime
-from pathlib import Path
+from dataclasses import dataclass, field
 
-class RunConfigManager:
-    def __init__(self, base_dir="runs"):
-        self.base_dir = base_dir
-        self.run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
-        self.run_dir = Path(base_dir) / self.run_id
-        self._create_dirs()
+@dataclass(frozen=True)
+class MainConfig:
+    batch_size: int = 128
+    epochs: int = 10
+    learning_rate: float = 0.001
+    weight_decay: float = 0.00025
+    transform_normalization_mean_3: list = field(default_factory=lambda: [0.5, 0.5, 0.5])
+    transform_normalization_std_3: list = field(default_factory=lambda: [0.5, 0.5, 0.5])
+    transform_normalization_mean_4: list = field(default_factory=lambda: [0.5, 0.5, 0.5, 0.5])
+    transform_normalization_std_4: list = field(default_factory=lambda: [0.5, 0.5, 0.5, 0.5])
 
-    def _create_dirs(self):
-        """Create all required subdirectories"""
-        self.models_dir = self.run_dir / "models"
-        self.plots_dir = self.run_dir / "plots"
-        self.logs_dir = self.run_dir / "logs"
+#@dataclass(frozen=True)
+#class ModelConfig:
 
-        for d in [self.models_dir, self.plots_dir, self.logs_dir]:
-            d.mkdir(parents=True, exist_ok=True)
+@dataclass(frozen=True)
+class MiscConfig:
+    dataset_train_path: str = "./dataset/shadowless_template/train"
+    dataset_test_path: str = "./dataset/shadowless_template/test"
+    is_alpha_enabled: bool = False
 
-    def get_model_path(self, name):
-        return str(self.models_dir / f"{name}.pth")
-
-    def get_plot_path(self, name):
-        return str(self.run_dir / "plots" / f"{name}.png")
-
-    def get_log_path(self, name):
-        return str(self.run_dir / "logs" / f"{name}.log")
-
-from typing import Optional, Dict, Any
-
-class Config:
-    def __init__(self, base_dir='runs', defaults: Optional[Dict[str, Any]] = None):
-        self.manager = RunConfigManager(base_dir)
-
-        # Initialize defaults if None
-        if defaults is None:
-            defaults = {}
-
-        # ============================================================================
-        # PATHS
-        # ============================================================================
-        self.TRAIN_PATH = defaults.get('TRAIN_PATH', "./dataset/shadowless_template/train")
-        self.TEST_PATH = defaults.get('TEST_PATH', "./dataset/shadowless_template/test")
-        self.PLOT_DIR = defaults.get('PLOT_DIR', "./plots")
-
-        # ============================================================================
-        # EXTRA
-        # ============================================================================
-        self.SAVE_MODEL = defaults.get('SAVE_MODEL', True)
-        self.ENABLE_PLOTTING = defaults.get('ENABLE_PLOTTING', True)
-
-    def get_plot_dir(self):
-        os.makedirs(self.PLOT_DIR, exist_ok=True)
-        return self.PLOT_DIR
-
-    def get_train_path(self):
-        return self.TRAIN_PATH
-
-    def get_test_path(self):
-        return self.TEST_PATH
+@dataclass(frozen=True)
+class NeurodragonConfig:
+    main: MainConfig = MainConfig()
+    misc: MiscConfig = MiscConfig()

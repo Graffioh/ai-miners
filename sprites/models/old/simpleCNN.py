@@ -4,7 +4,7 @@ class SimpleCNN(nn.Module):
     """
     Simple CNN 
     """
-    def __init__(self, num_classes=8, input_channels=4):
+    def __init__(self, num_classes=8, input_channels=3):
         super(SimpleCNN, self).__init__()
 
         # Convolutional layers - detect features

@@ -1,21 +1,24 @@
 import torch
+import matplotlib.pyplot as plt
+from datetime import datetime
 
-def train_sprites(model, data_loader, criterion, optimizer, device, config, epochs=5, plotter=None):
+def train_model(model, train_loader, criterion, optimizer, device, epochs):
     """
-    Train the model with integrated plotting and saving via RunManager
+    Train the model 
     """
+    train_loader_len = len(train_loader)
     model.train()
+
+    epoch_losses = []
 
     for epoch in range(epochs):
         running_loss = 0.0
         correct = 0
         total = 0
 
-        for batch_idx, (_, img_data, target, _) in enumerate(data_loader):
-            # Move data to device (GPU if available)
+        for batch_idx, (_, img_data, target, _) in enumerate(train_loader):
             img_data, target = img_data.to(device), target.to(device)
 
-            # Zero gradients
             optimizer.zero_grad()
 
             # Forward pass
@@ -34,27 +37,25 @@ def train_sprites(model, data_loader, criterion, optimizer, device, config, epoc
 
             # Print progress
             if batch_idx % 200 == 0:
-                print(f'Epoch {epoch+1}/{epochs}, Batch {batch_idx}/{len(data_loader)}, '
+                print(f'Epoch {epoch+1}/{epochs}, Batch {batch_idx}/{train_loader_len}, '
                       f'Loss: {loss.item():.4f}')
 
         # Calculate epoch metrics
-        epoch_loss = running_loss / len(data_loader)
+        epoch_loss = running_loss / train_loader_len
         epoch_acc = 100 * correct / total
 
-        # Update plotter with epoch metrics
-        if plotter:
-            plotter.update(epoch_loss, epoch_acc)
-
+        # Store loss for plotting
+        epoch_losses.append(epoch_loss)
+        
         print(f'Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}%')
+    
+    # Plot training loss
+    plt.figure(figsize=(8, 6))
+    plt.plot(range(1, epochs + 1), epoch_losses, 'b-', linewidth=2)
+    plt.title('Training Loss vs Epoch')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.grid(True)
 
-        # Save training log
-        log_path = config.manager.get_log_path("training")
-        with open(log_path, "a") as f:
-            f.write(f"Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}%\n")
-
-    # Generate and save plots at the end of training
-    if plotter:
-        print("\nGenerating training plots...")
-        plotter.plot_loss(config.manager.get_plot_path("training_loss"))
-        #plotter.plot_accuracy(config.manager.get_plot_path("training_accuracy"))
-        print(f"✅ Plots saved to: {config.manager.plots_dir}")
+    plt.savefig(f"./plots/training_loss_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
+    plt.show()

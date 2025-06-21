@@ -1,6 +1,6 @@
 import torch
 
-def test_model(model, test_loader, criterion, device, plotter=None):
+def test_model(model, test_loader, criterion, device):
     """
     Evaluate the model on test data for each epoch
     """
@@ -10,8 +10,20 @@ def test_model(model, test_loader, criterion, device, plotter=None):
     correct = 0
     total = 0
     
+    # Store predictions and targets for confusion matrix
+    all_predictions = []
+    all_targets = []
+    all_characters = []
+    
     with torch.no_grad():
-        for _, img_data, target, _ in test_loader:
+        for batch_data in test_loader:
+            # Handle different batch formats
+            if len(batch_data) == 4:
+                _, img_data, target, character = batch_data
+            else:
+                img_data, target = batch_data
+                character = None
+            
             # Move data to device
             img_data, target = img_data.to(device), target.to(device)
             
@@ -24,13 +36,9 @@ def test_model(model, test_loader, criterion, device, plotter=None):
             _, predicted = torch.max(output.data, 1)
             total += target.size(0)
             correct += (predicted == target).sum().item()
-    
+            
     # Calculate test metrics
-    test_loss = running_loss / len(test_loader)
+    #test_loss = running_loss / len(test_loader)
     test_acc = 100 * correct / total
-    
-    # Update plotter with test metrics
-    if plotter:
-        plotter.update_test(test_loss, test_acc)
-    
-    return test_loss, test_acc
+
+    print("TEST ACCURACY: ", test_acc)

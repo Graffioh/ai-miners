@@ -76,8 +76,6 @@ class SpriteDataset(Dataset):
                         bottom = top + self.sprite_height
 
                         sprite_img = sprite_sheet.crop((left, top, right, bottom))
-                        if sprite_img.mode == 'RGBA':
-                            sprite_img = sprite_img.convert('RGB')
 
                         sprite_array = np.array(sprite_img)
 

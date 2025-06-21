@@ -6,10 +6,12 @@ mnist/venv
 mnist/data/*
 mnist_model.pth
 
+sprites/dataset.zip
 sprites/dataset/test
 sprites/dataset/train
 sprites/dataset/shadowless_random
 sprites/dataset/shadowless_template
 sprites/runs
+sprites/plots
 
 sprites/venv
