@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 @dataclass(frozen=True)
 class MainConfig:
     batch_size: int = 128
-    epochs: int = 10
+    epochs: int = 1
     learning_rate: float = 0.001
     weight_decay: float = 0.00025
     transform_normalization_mean_3: list = field(default_factory=lambda: [0.5, 0.5, 0.5])

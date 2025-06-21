@@ -1,4 +1,5 @@
 import torch
+from  utils.plotter import create_direction_confusion_matrix, create_character_confusion_matrix
 
 def test_model(model, test_loader, criterion, device):
     """
@@ -17,14 +18,8 @@ def test_model(model, test_loader, criterion, device):
     
     with torch.no_grad():
         for batch_data in test_loader:
-            # Handle different batch formats
-            if len(batch_data) == 4:
-                _, img_data, target, character = batch_data
-            else:
-                img_data, target = batch_data
-                character = None
+            character, img_data, target, _ = batch_data  
             
-            # Move data to device
             img_data, target = img_data.to(device), target.to(device)
             
             # Forward pass
@@ -37,8 +32,17 @@ def test_model(model, test_loader, criterion, device):
             total += target.size(0)
             correct += (predicted == target).sum().item()
             
+            # Store for analysis
+            all_predictions.extend(predicted.cpu().numpy())
+            all_targets.extend(target.cpu().numpy())
+            all_characters.extend(character)
+            
     # Calculate test metrics
-    #test_loss = running_loss / len(test_loader)
     test_acc = 100 * correct / total
-
-    print("TEST ACCURACY: ", test_acc)
+    print("DIRECTION CLASSIFICATION ACCURACY: ", test_acc)
+    
+    # Generate both confusion matrices
+    create_direction_confusion_matrix(all_targets, all_predictions)
+    create_character_confusion_matrix(all_characters, all_targets, all_predictions)
+    
+    return test_acc

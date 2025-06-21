@@ -28,6 +28,7 @@ print(f"Using device: {device}")
 def main():
     # ++ REFACTOR ++
     # [] plotting
+    # [] dynamic background (not present in the palette)
 
     config = NeurodragonConfig()
 
@@ -70,7 +71,6 @@ def main():
     print_separator()
 
     test_model(model, test_loader, criterion, device)
-
 
 if __name__ == "__main__":
     main()

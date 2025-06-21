@@ -1,6 +1,5 @@
 import torch
-import matplotlib.pyplot as plt
-from datetime import datetime
+from utils.plotter import plot_training_loss
 
 def train_model(model, train_loader, criterion, optimizer, device, epochs):
     """
@@ -49,13 +48,4 @@ def train_model(model, train_loader, criterion, optimizer, device, epochs):
         
         print(f'Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}%')
     
-    # Plot training loss
-    plt.figure(figsize=(8, 6))
-    plt.plot(range(1, epochs + 1), epoch_losses, 'b-', linewidth=2)
-    plt.title('Training Loss vs Epoch')
-    plt.xlabel('Epoch')
-    plt.ylabel('Loss')
-    plt.grid(True)
-
-    plt.savefig(f"./plots/training_loss_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png")
-    plt.show()
+        plot_training_loss(epochs, epoch_losses)
