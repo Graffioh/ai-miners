@@ -48,4 +48,4 @@ def train_model(model, train_loader, criterion, optimizer, device, epochs):
         
         print(f'Epoch {epoch+1}/{epochs} - Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}%')
     
-        plot_training_loss(epochs, epoch_losses)
+    plot_training_loss(epochs, epoch_losses)

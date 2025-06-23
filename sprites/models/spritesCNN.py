@@ -40,7 +40,7 @@ class SpritesCNN(nn.Module):
 
     def forward(self, x):
         # Feature extraction with batch normalization
-        x = self.relu(self.pool(self.bn1(self.conv1(x))))
+        x = self.pool(self.relu(self.bn1(self.conv1(x))))
         x = self.relu(self.bn2(self.conv2(x)))  
         x = self.relu(self.bn3(self.conv3(x)))  
         x = self.relu(self.bn4(self.conv4(x)))  
